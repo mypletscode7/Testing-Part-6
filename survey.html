@@ -1,0 +1,1623 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Tell Us More About You! | MYP Haven</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<link
+    href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700;800&family=DM+Sans:wght@400;500;600;700&display=swap"
+    rel="stylesheet"
+>
+
+<style>
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    min-height: 100vh;
+    background: #A855F7;
+    font-family: "DM Sans", sans-serif;
+    padding: 45px 20px;
+    color: #171717;
+}
+
+.page {
+    width: min(1100px, 100%);
+    margin: auto;
+}
+
+.title {
+    color: white;
+    font-family: "Bricolage Grotesque", sans-serif;
+    font-size: clamp(3rem, 8vw, 6.5rem);
+    font-weight: 800;
+    line-height: .9;
+    letter-spacing: -0.05em;
+    text-align: center;
+    margin-bottom: 35px;
+}
+
+.card {
+    background: white;
+    border-radius: 35px;
+    padding: 50px;
+    box-shadow: 0 25px 70px rgba(0,0,0,.18);
+}
+
+.intro {
+    text-align: center;
+    color: #666;
+    line-height: 1.6;
+    margin-bottom: 45px;
+}
+
+.section {
+    margin-bottom: 45px;
+}
+
+.question {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 20px;
+}
+
+.required {
+    color: #A855F7;
+}
+
+.year-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+}
+
+.year {
+    border: 2px solid #e5e5e5;
+    background: white;
+    border-radius: 18px;
+    min-height: 65px;
+    font-family: "DM Sans", sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: .2s ease;
+}
+
+.year:hover {
+    border-color: #A855F7;
+    transform: translateY(-2px);
+}
+
+.year.selected {
+    background: #A855F7;
+    border-color: #A855F7;
+    color: white;
+    transform: scale(1.03);
+}
+
+.group {
+    margin-bottom: 35px;
+}
+
+.group-title {
+    font-family: "Bricolage Grotesque", sans-serif;
+    color: #A855F7;
+    font-size: 1.7rem;
+    font-weight: 800;
+    margin-bottom: 14px;
+}
+
+.subjects {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+}
+
+.subject {
+    min-height: 58px;
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    border: 2px solid #e7e7e7;
+    border-radius: 16px;
+    background: white;
+    cursor: pointer;
+    transition: .2s ease;
+}
+
+.subject:hover {
+    border-color: #A855F7;
+    transform: translateY(-2px);
+}
+
+.subject.selected {
+    background: #F3E8FF;
+    border-color: #A855F7;
+    transform: scale(1.02);
+}
+
+.circle {
+    width: 28px;
+    height: 28px;
+    min-width: 28px;
+    border: 2px solid #ccc;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 13px;
+    color: transparent;
+    font-weight: 800;
+    transition: .25s ease;
+}
+
+.subject.selected .circle {
+    background: #A855F7;
+    border-color: #A855F7;
+    color: white;
+    animation: pop .3s ease;
+}
+
+@keyframes pop {
+    0% { transform: scale(.4); }
+    70% { transform: scale(1.25); }
+    100% { transform: scale(1); }
+}
+
+.label {
+    font-weight: 600;
+}
+
+.error {
+    display: none;
+    margin-top: 15px;
+    padding: 13px 17px;
+    border-radius: 12px;
+    background: #FFE4E6;
+    color: #BE123C;
+    font-weight: 600;
+}
+
+.error.show {
+    display: block;
+}
+
+.unlock {
+    border-top: 2px solid #eee;
+    padding-top: 40px;
+    text-align: center;
+}
+
+.unlock h2 {
+    font-family: "Bricolage Grotesque", sans-serif;
+    font-size: 2rem;
+    margin-bottom: 10px;
+}
+
+.unlock p {
+    color: #666;
+    margin-bottom: 25px;
+}
+
+.slider {
+    max-width: 850px;
+    height: 85px;
+    margin: auto;
+    padding: 8px;
+    background: #F3E8FF;
+    border-radius: 999px;
+}
+
+.track {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background: #E9D5FF;
+    border-radius: 999px;
+}
+
+.slider-text {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #7E22CE;
+    font-weight: 700;
+    pointer-events: none;
+}
+
+.cap {
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    width: 67px;
+    height: 67px;
+    border-radius: 50%;
+    background: #A855F7;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.1rem;
+    cursor: grab;
+    user-select: none;
+    touch-action: none;
+    box-shadow: 0 5px 15px rgba(168,85,247,.35);
+}
+
+.success {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: #A855F7;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    overflow: hidden;
+}
+
+.success.show {
+    display: flex;
+}
+
+.success-content {
+    position: relative;
+    z-index: 5;
+    color: white;
+}
+
+.success-cap {
+    font-size: 7rem;
+    animation: celebrate .8s ease both;
+}
+
+@keyframes celebrate {
+    0% {
+        transform: scale(0) rotate(-20deg);
+    }
+
+    70% {
+        transform: scale(1.2) rotate(8deg);
+    }
+
+    100% {
+        transform: scale(1) rotate(0);
+    }
+}
+
+.success h1 {
+    font-family: "Bricolage Grotesque", sans-serif;
+    font-size: clamp(3rem, 8vw, 7rem);
+    line-height: .9;
+    margin: 20px 0;
+}
+
+.success p {
+    font-size: 1.2rem;
+}
+
+.confetti {
+    position: fixed;
+    width: 12px;
+    height: 18px;
+    z-index: 4;
+    pointer-events: none;
+    animation: fall 2.5s ease-out forwards;
+}
+
+@keyframes fall {
+    to {
+        opacity: 0;
+        transform:
+            translate(var(--x), var(--y))
+            rotate(var(--r));
+    }
+}
+
+@media(max-width:800px) {
+
+    .card {
+        padding: 30px 20px;
+    }
+
+    .year-grid {
+        grid-template-columns: repeat(2,1fr);
+    }
+
+    .subjects {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+@media(max-width:450px) {
+
+    .year-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .title {
+        font-size: 3rem;
+    }
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="page">
+
+    <h1 class="title">
+        Tell us more about you!
+    </h1>
+
+    <div class="card">
+
+        <p class="intro">
+            Before entering MYP Haven, tell us a little about your MYP journey so we can personalize your experience.
+        </p>
+
+
+        <div class="section">
+
+            <h2 class="question">
+                Select your current MYP year:
+                <span class="required">*</span>
+            </h2>
+
+            <div class="year-grid">
+
+                <button type="button" class="year" data-year="Pre MYP (PYP5)">
+                    Pre MYP (PYP5)
+                </button>
+
+                <button type="button" class="year" data-year="MYP 1">
+                    MYP 1
+                </button>
+
+                <button type="button" class="year" data-year="MYP 2">
+                    MYP 2
+                </button>
+
+                <button type="button" class="year" data-year="MYP 3">
+                    MYP 3
+                </button>
+
+                <button type="button" class="year" data-year="MYP 4">
+                    MYP 4
+                </button>
+
+                <button type="button" class="year" data-year="MYP 5">
+                    MYP 5
+                </button>
+
+                <button type="button" class="year" data-year="Other">
+                    Other
+                </button>
+
+            </div>
+
+            <div class="error" id="yearError">
+                Please select your current MYP year before continuing.
+            </div>
+
+        </div>
+
+
+        <div class="section">
+
+            <h2 class="question">
+                Select your current MYP subjects:
+            </h2>
+
+
+            <div class="group">
+
+                <h3 class="group-title">
+                    Language and Literature
+                </h3>
+
+                <div class="subjects">
+
+                    <div class="subject" data-subject="English Language & Literature">
+                        <span class="circle">✓</span>
+                        <span class="label">English Language & Literature</span>
+                    </div>
+
+                    <div class="subject" data-subject="Other Language and Literature">
+                        <span class="circle">✓</span>
+                        <span class="label">Other</span>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="group">
+
+                <h3 class="group-title">
+                    Language Acquisition
+                </h3>
+
+                <div class="subjects">
+
+                    <div class="subject" data-subject="Spanish">
+                        <span class="circle">✓</span>
+                        <span class="label">Spanish</span>
+                    </div>
+
+                    <div class="subject" data-subject="French">
+                        <span class="circle">✓</span>
+                        <span class="label">French</span>
+                    </div>
+
+                    <div class="subject" data-subject="German">
+                        <span class="circle">✓</span>
+                        <span class="label">German</span>
+                    </div>
+
+                    <div class="subject" data-subject="Mandarin Chinese">
+                        <span class="circle">✓</span>
+                        <span class="label">Mandarin Chinese</span>
+                    </div>
+
+                    <div class="subject" data-subject="Arabic">
+                        <span class="circle">✓</span>
+                        <span class="label">Arabic</span>
+                    </div>
+
+                    <div class="subject" data-subject="Other Language Acquisition">
+                        <span class="circle">✓</span>
+                        <span class="label">
+                            Other language acquisition courses
+                        </span>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="group">
+
+                <h3 class="group-title">
+                    Individuals and Societies
+                </h3>
+
+                <div class="subjects">
+
+                    <div class="subject" data-subject="Integrated Humanities">
+                        <span class="circle">✓</span>
+                        <span class="label">Integrated Humanities</span>
+                    </div>
+
+                    <div class="subject" data-subject="History">
+                        <span class="circle">✓</span>
+                        <span class="label">History</span>
+                    </div>
+
+                    <div class="subject" data-subject="Geography">
+                        <span class="circle">✓</span>
+                        <span class="label">Geography</span>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="group">
+
+                <h3 class="group-title">
+                    Sciences
+                </h3>
+
+                <div class="subjects">
+
+                    <div class="subject" data-subject="Integrated Sciences">
+                        <span class="circle">✓</span>
+                        <span class="label">Integrated Sciences</span>
+                    </div>
+
+                    <div class="subject" data-subject="Biology">
+                        <span class="circle">✓</span>
+                        <span class="label">Biology</span>
+                    </div>
+
+                    <div class="subject" data-subject="Chemistry">
+                        <span class="circle">✓</span>
+                        <span class="label">Chemistry</span>
+                    </div>
+
+                    <div class="subject" data-subject="Physics">
+                        <span class="circle">✓</span>
+                        <span class="label">Physics</span>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="group">
+
+                <h3 class="group-title">
+                    Mathematics
+                </h3>
+
+                <div class="subjects">
+
+                    <div class="subject" data-subject="Mathematics (MYP1-5)">
+                        <span class="circle">✓</span>
+                        <span class="label">Mathematics (MYP1-5)</span>
+                    </div>
+
+                    <div class="subject" data-subject="Extended Mathematics (MYP4-5)">
+                        <span class="circle">✓</span>
+                        <span class="label">Extended Mathematics (MYP4-5)</span>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="group">
+
+                <h3 class="group-title">
+                    Arts
+                </h3>
+
+                <div class="subjects">
+
+                    <div class="subject" data-subject="Dance">
+                        <span class="circle">✓</span>
+                        <span class="label">Dance</span>
+                    </div>
+
+                    <div class="subject" data-subject="Media Arts">
+                        <span class="circle">✓</span>
+                        <span class="label">Media Arts</span>
+                    </div>
+
+                    <div class="subject" data-subject="Music">
+                        <span class="circle">✓</span>
+                        <span class="label">Music</span>
+                    </div>
+
+                    <div class="subject" data-subject="Theatre">
+                        <span class="circle">✓</span>
+                        <span class="label">Theatre</span>
+                    </div>
+
+                    <div class="subject" data-subject="Visual Arts">
+                        <span class="circle">✓</span>
+                        <span class="label">Visual Arts</span>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="group">
+
+                <h3 class="group-title">
+                    Physical and Health Education
+                </h3>
+
+                <div class="subjects">
+
+                    <div class="subject" data-subject="Physical and Health Education">
+                        <span class="circle">✓</span>
+                        <span class="label">
+                            Physical and Health Education
+                        </span>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="group">
+
+                <h3 class="group-title">
+                    Design
+                </h3>
+
+                <div class="subjects">
+
+                    <div class="subject" data-subject="Design">
+                        <span class="circle">✓</span>
+                        <span class="label">
+                            Design
+                        </span>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="unlock">
+
+                <h2>
+                    Ready to enter MYP Haven? 🎓
+                </h2>
+
+                <p>
+                    Slide the graduation cap all the way across to unlock your dashboard.
+                </p>
+
+                <div class="slider">
+
+                    <div class="track" id="track">
+
+                        <div
+                            class="slider-text"
+                            id="sliderText"
+                        >
+                            SLIDE TO UNLOCK →
+                        </div>
+
+                        <div
+                            class="cap"
+                            id="cap"
+                        >
+                            🎓
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="error" id="subjectError">
+                    Please select at least one subject.
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- SUCCESS -->
+
+<div class="success" id="success">
+
+    <div class="success-content">
+
+        <div class="success-cap">
+            🎓
+        </div>
+
+        <h1>
+            Welcome to<br>
+            MYP Haven!
+        </h1>
+
+        <p>
+            Your MYP journey starts now. 🎉
+        </p>
+
+    </div>
+
+</div>
+
+
+<!-- =================================================
+     FIREBASE
+================================================= -->
+
+<script type="module">
+
+import {
+    initializeApp
+} from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
+
+import {
+    getAuth,
+    onAuthStateChanged,
+    setPersistence,
+    browserLocalPersistence
+} from "https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js";
+
+import {
+    getFirestore,
+    doc,
+    getDoc,
+    setDoc,
+    serverTimestamp
+} from "https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
+
+
+/* =================================================
+   FIREBASE CONFIG
+================================================= */
+
+const firebaseConfig = {
+
+    apiKey:
+        "AIzaSyBNI4CR26Re0xdh-T0XdVyb6fFN7SPgPNA",
+
+    authDomain:
+        "the-myp-haven.firebaseapp.com",
+
+    projectId:
+        "the-myp-haven",
+
+    storageBucket:
+        "the-myp-haven.firebasestorage.app",
+
+    messagingSenderId:
+        "904577455533",
+
+    appId:
+        "1:904577455533:web:1d918ee8a3caa547eefd24"
+
+};
+
+
+/* =================================================
+   INITIALIZE
+================================================= */
+
+const app =
+    initializeApp(firebaseConfig);
+
+const auth =
+    getAuth(app);
+
+const db =
+    getFirestore(app);
+
+
+/* =================================================
+   KEEP LOGIN AFTER REFRESH
+================================================= */
+
+await setPersistence(
+    auth,
+    browserLocalPersistence
+);
+
+
+/* =================================================
+   VARIABLES
+================================================= */
+
+let currentUser = null;
+
+let selectedYear = null;
+
+let selectedSubjects = [];
+
+let dragging = false;
+
+let surveyFinished = false;
+
+
+/* =================================================
+   ELEMENTS
+================================================= */
+
+const years =
+    document.querySelectorAll(".year");
+
+const subjects =
+    document.querySelectorAll(".subject");
+
+const yearError =
+    document.getElementById("yearError");
+
+const subjectError =
+    document.getElementById("subjectError");
+
+const track =
+    document.getElementById("track");
+
+const cap =
+    document.getElementById("cap");
+
+const sliderText =
+    document.getElementById("sliderText");
+
+const success =
+    document.getElementById("success");
+
+
+/* =================================================
+   AUTH CHECK
+================================================= */
+
+onAuthStateChanged(
+    auth,
+    async user => {
+
+        if (!user) {
+
+            window.location.href =
+                "./account.html";
+
+            return;
+
+        }
+
+        currentUser = user;
+
+        console.log(
+            "Logged-in user:",
+            currentUser.uid
+        );
+
+        await loadExistingSurvey();
+
+    }
+);
+
+
+/* =================================================
+   LOAD EXISTING DATA
+================================================= */
+
+async function loadExistingSurvey() {
+
+    try {
+
+        const userRef =
+            doc(
+                db,
+                "users",
+                currentUser.uid
+            );
+
+        const snapshot =
+            await getDoc(userRef);
+
+
+        if (!snapshot.exists()) {
+            return;
+        }
+
+
+        const data =
+            snapshot.data();
+
+
+        /* RESTORE YEAR */
+
+        if (data.mypYear) {
+
+            selectedYear =
+                data.mypYear;
+
+            years.forEach(year => {
+
+                if (
+                    year.dataset.year ===
+                    selectedYear
+                ) {
+
+                    year.classList.add(
+                        "selected"
+                    );
+
+                }
+
+            });
+
+        }
+
+
+        /* RESTORE SUBJECTS */
+
+        if (
+            Array.isArray(
+                data.subjects
+            )
+        ) {
+
+            selectedSubjects =
+                [...data.subjects];
+
+            subjects.forEach(subject => {
+
+                if (
+                    selectedSubjects.includes(
+                        subject.dataset.subject
+                    )
+                ) {
+
+                    subject.classList.add(
+                        "selected"
+                    );
+
+                }
+
+            });
+
+        }
+
+
+        console.log(
+            "Survey data loaded."
+        );
+
+
+    } catch (error) {
+
+        console.error(
+            "Error loading survey:",
+            error
+        );
+
+    }
+
+}
+
+
+/* =================================================
+   YEAR SELECTION
+================================================= */
+
+years.forEach(year => {
+
+    year.addEventListener(
+        "click",
+        function() {
+
+            years.forEach(
+                item =>
+                    item.classList.remove(
+                        "selected"
+                    )
+            );
+
+            this.classList.add(
+                "selected"
+            );
+
+            selectedYear =
+                this.dataset.year;
+
+            yearError.classList.remove(
+                "show"
+            );
+
+        }
+    );
+
+});
+
+
+/* =================================================
+   SUBJECT SELECTION
+================================================= */
+
+subjects.forEach(subject => {
+
+    subject.addEventListener(
+        "click",
+        function() {
+
+            const value =
+                this.dataset.subject;
+
+
+            this.classList.toggle(
+                "selected"
+            );
+
+
+            if (
+                this.classList.contains(
+                    "selected"
+                )
+            ) {
+
+                if (
+                    !selectedSubjects.includes(
+                        value
+                    )
+                ) {
+
+                    selectedSubjects.push(
+                        value
+                    );
+
+                }
+
+            } else {
+
+                selectedSubjects =
+                    selectedSubjects.filter(
+                        item =>
+                            item !== value
+                    );
+
+            }
+
+
+            subjectError.classList.remove(
+                "show"
+            );
+
+        }
+    );
+
+});
+
+
+/* =================================================
+   SAVE TO FIREBASE
+================================================= */
+
+async function saveSurvey() {
+
+    if (!currentUser) {
+
+        throw new Error(
+            "No logged-in Firebase user."
+        );
+
+    }
+
+
+    const userRef =
+        doc(
+            db,
+            "users",
+            currentUser.uid
+        );
+
+
+    await setDoc(
+        userRef,
+        {
+
+            uid:
+                currentUser.uid,
+
+            email:
+                currentUser.email || "",
+
+            fullName:
+                currentUser.displayName || "",
+
+            mypYear:
+                selectedYear,
+
+            subjects:
+                selectedSubjects,
+
+            surveyCompleted:
+                true,
+
+            lockedIn:
+                true,
+
+            updatedAt:
+                serverTimestamp()
+
+        },
+        {
+            merge: true
+        }
+    );
+
+
+    /* BACKUP */
+
+    localStorage.setItem(
+        "mypHavenSurvey",
+        JSON.stringify({
+
+            mypYear:
+                selectedYear,
+
+            subjects:
+                selectedSubjects,
+
+            completed:
+                true,
+
+            completedAt:
+                new Date().toISOString()
+
+        })
+    );
+
+
+    localStorage.setItem(
+        `mypHavenLockedIn_${currentUser.uid}`,
+        "true"
+    );
+
+
+    console.log(
+        "SURVEY SAVED TO FIREBASE"
+    );
+
+}
+
+
+/* =================================================
+   SLIDER POSITION
+================================================= */
+
+function getMax() {
+
+    return Math.max(
+        0,
+        track.clientWidth -
+        cap.offsetWidth -
+        8
+    );
+
+}
+
+
+/* =================================================
+   MOVE CAP
+================================================= */
+
+function moveCap(clientX) {
+
+    if (surveyFinished) return;
+
+
+    const rect =
+        track.getBoundingClientRect();
+
+
+    const max =
+        getMax();
+
+
+    let position =
+        clientX -
+        rect.left -
+        cap.offsetWidth / 2;
+
+
+    position =
+        Math.max(
+            4,
+            Math.min(
+                position,
+                max
+            )
+        );
+
+
+    cap.style.left =
+        position + "px";
+
+
+    const percentage =
+        max > 0
+            ? position / max
+            : 0;
+
+
+    if (percentage >= 0.75) {
+
+        sliderText.textContent =
+            "ALMOST THERE!";
+
+    } else {
+
+        sliderText.textContent =
+            "SLIDE TO UNLOCK →";
+
+    }
+
+
+    if (percentage >= 0.96) {
+
+        finishSurvey();
+
+    }
+
+}
+
+
+/* =================================================
+   MOUSE
+================================================= */
+
+cap.addEventListener(
+    "mousedown",
+    event => {
+
+        if (surveyFinished) return;
+
+        dragging = true;
+
+        event.preventDefault();
+
+    }
+);
+
+
+document.addEventListener(
+    "mousemove",
+    event => {
+
+        if (!dragging) return;
+
+        moveCap(
+            event.clientX
+        );
+
+    }
+);
+
+
+document.addEventListener(
+    "mouseup",
+    () => {
+
+        if (!dragging) return;
+
+        dragging = false;
+
+
+        if (surveyFinished) return;
+
+
+        const position =
+            parseFloat(
+                cap.style.left
+            ) || 4;
+
+
+        const max =
+            getMax();
+
+
+        if (
+            position <
+            max * 0.96
+        ) {
+
+            cap.style.left =
+                "4px";
+
+            sliderText.textContent =
+                "SLIDE TO UNLOCK →";
+
+        }
+
+    }
+);
+
+
+/* =================================================
+   TOUCH
+================================================= */
+
+cap.addEventListener(
+    "touchstart",
+    event => {
+
+        if (surveyFinished) return;
+
+        dragging = true;
+
+    },
+    {
+        passive: true
+    }
+);
+
+
+document.addEventListener(
+    "touchmove",
+    event => {
+
+        if (!dragging) return;
+
+        moveCap(
+            event.touches[0].clientX
+        );
+
+    },
+    {
+        passive: true
+    }
+);
+
+
+document.addEventListener(
+    "touchend",
+    () => {
+
+        if (!dragging) return;
+
+        dragging = false;
+
+
+        if (surveyFinished) return;
+
+
+        const position =
+            parseFloat(
+                cap.style.left
+            ) || 4;
+
+
+        const max =
+            getMax();
+
+
+        if (
+            position <
+            max * 0.96
+        ) {
+
+            cap.style.left =
+                "4px";
+
+            sliderText.textContent =
+                "SLIDE TO UNLOCK →";
+
+        }
+
+    }
+);
+
+
+/* =================================================
+   CONFETTI
+================================================= */
+
+function createConfetti() {
+
+    const colors = [
+        "#FF4D6D",
+        "#FFD23F",
+        "#39D6C0",
+        "#8B5CF6",
+        "#00C2FF",
+        "#FFFFFF"
+    ];
+
+
+    for (
+        let i = 0;
+        i < 220;
+        i++
+    ) {
+
+        const piece =
+            document.createElement(
+                "div"
+            );
+
+
+        piece.className =
+            "confetti";
+
+
+        piece.style.left =
+            "50%";
+
+        piece.style.top =
+            "50%";
+
+
+        piece.style.background =
+            colors[
+                Math.floor(
+                    Math.random() *
+                    colors.length
+                )
+            ];
+
+
+        piece.style.setProperty(
+            "--x",
+            (
+                (Math.random() - 0.5) *
+                window.innerWidth *
+                1.7
+            ) + "px"
+        );
+
+
+        piece.style.setProperty(
+            "--y",
+            (
+                (Math.random() - 0.5) *
+                window.innerHeight *
+                1.7
+            ) + "px"
+        );
+
+
+        piece.style.setProperty(
+            "--r",
+            (
+                Math.random() *
+                1440
+            ) + "deg"
+        );
+
+
+        document.body.appendChild(
+            piece
+        );
+
+
+        setTimeout(
+            () => piece.remove(),
+            2800
+        );
+
+    }
+
+}
+
+
+/* =================================================
+   FINISH SURVEY
+================================================= */
+
+async function finishSurvey() {
+
+    if (surveyFinished) return;
+
+
+    if (!selectedYear) {
+
+        dragging = false;
+
+        cap.style.left =
+            "4px";
+
+        sliderText.textContent =
+            "SELECT YOUR MYP YEAR FIRST";
+
+        yearError.classList.add(
+            "show"
+        );
+
+        document
+            .querySelector(".section")
+            .scrollIntoView({
+                behavior: "smooth"
+            });
+
+        return;
+
+    }
+
+
+    if (
+        selectedSubjects.length === 0
+    ) {
+
+        dragging = false;
+
+        cap.style.left =
+            "4px";
+
+        sliderText.textContent =
+            "SELECT AT LEAST ONE SUBJECT";
+
+        subjectError.classList.add(
+            "show"
+        );
+
+        return;
+
+    }
+
+
+    surveyFinished = true;
+
+    dragging = false;
+
+
+    try {
+
+        /* SAVE TO FIREBASE FIRST */
+
+        await saveSurvey();
+
+
+        /* MOVE CAP */
+
+        cap.style.left =
+            getMax() + "px";
+
+
+        sliderText.textContent =
+            "UNLOCKED! 🎉";
+
+
+        /* SHOW SUCCESS */
+
+        success.classList.add(
+            "show"
+        );
+
+
+        createConfetti();
+
+        setTimeout(
+            createConfetti,
+            700
+        );
+
+        setTimeout(
+            createConfetti,
+            1400
+        );
+
+
+        /* GO TO DASHBOARD */
+
+        setTimeout(
+            () => {
+
+                window.location.href =
+                    "./dashboard.html";
+
+            },
+            4000
+        );
+
+
+    } catch (error) {
+
+        console.error(
+            "SURVEY SAVE ERROR:",
+            error
+        );
+
+
+        surveyFinished = false;
+
+
+        cap.style.left =
+            "4px";
+
+
+        sliderText.textContent =
+            "TRY AGAIN";
+
+
+        alert(
+            "Your information could not be saved. Please check your Firebase Firestore rules."
+        );
+
+    }
+
+}
+
+</script>
+
+</body>
+</html>
