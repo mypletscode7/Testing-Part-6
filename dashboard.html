@@ -986,6 +986,7 @@ body{
 ========================================================= */
 
 @media(max-width:1000px){
+
     .dashboard-layout{
         grid-template-columns:1fr;
     }
@@ -998,9 +999,11 @@ body{
     .side-tab{
         text-align:center;
     }
+
 }
 
 @media(max-width:700px){
+
     .lock-slider{
         height:95px;
     }
@@ -1088,6 +1091,7 @@ body{
     .field.full{
         grid-column:auto;
     }
+
 }
 </style>
 </head>
@@ -1142,7 +1146,10 @@ body{
 
             <div class="top-actions">
 
-                <button class="background-button" id="backgroundUploadButton">
+                <button
+                    class="background-button"
+                    id="backgroundUploadButton"
+                >
                     🖼️ Change Background
                 </button>
 
@@ -1165,6 +1172,7 @@ body{
             <aside class="sidebar">
 
                 <div class="side-tab-wrap">
+
                     <button
                         class="side-tab school"
                         id="schoolButton"
@@ -1178,10 +1186,12 @@ body{
                     >
                         ⋯
                     </button>
+
                 </div>
 
 
                 <div class="side-tab-wrap">
+
                     <button
                         class="side-tab email"
                         id="emailButton"
@@ -1195,6 +1205,7 @@ body{
                     >
                         ⋯
                     </button>
+
                 </div>
 
 
@@ -1282,13 +1293,33 @@ body{
 
                     <div class="weekdays">
 
-                        <div class="weekday weekend">Sun</div>
-                        <div class="weekday weekday-week">Mon</div>
-                        <div class="weekday weekday-week">Tue</div>
-                        <div class="weekday weekday-week">Wed</div>
-                        <div class="weekday weekday-week">Thu</div>
-                        <div class="weekday weekday-week">Fri</div>
-                        <div class="weekday weekend">Sat</div>
+                        <div class="weekday weekend">
+                            Sun
+                        </div>
+
+                        <div class="weekday weekday-week">
+                            Mon
+                        </div>
+
+                        <div class="weekday weekday-week">
+                            Tue
+                        </div>
+
+                        <div class="weekday weekday-week">
+                            Wed
+                        </div>
+
+                        <div class="weekday weekday-week">
+                            Thu
+                        </div>
+
+                        <div class="weekday weekday-week">
+                            Fri
+                        </div>
+
+                        <div class="weekday weekend">
+                            Sat
+                        </div>
 
                     </div>
 
@@ -1310,7 +1341,9 @@ body{
                 id="rubricsPage"
             >
 
-                <h1>Rubrics</h1>
+                <h1>
+                    Rubrics
+                </h1>
 
                 <div class="rubric-cards">
 
@@ -1377,8 +1410,6 @@ body{
 
         <div class="form-grid">
 
-            <!-- COURSE -->
-
             <div class="field full">
 
                 <div class="field-label">
@@ -1393,8 +1424,6 @@ body{
             </div>
 
 
-            <!-- LAST REVIEW -->
-
             <div class="field">
 
                 <div class="field-label">
@@ -1408,8 +1437,6 @@ body{
 
             </div>
 
-
-            <!-- MASTERY -->
 
             <div class="field">
 
@@ -1474,8 +1501,6 @@ body{
             </div>
 
 
-            <!-- ASSIGNMENT -->
-
             <div class="field full">
 
                 <div class="field-label">
@@ -1496,8 +1521,6 @@ body{
             </div>
 
 
-            <!-- DATE -->
-
             <div class="field">
 
                 <div class="field-label">
@@ -1511,8 +1534,6 @@ body{
 
             </div>
 
-
-            <!-- DUE DATE -->
 
             <div class="field">
 
@@ -1528,8 +1549,6 @@ body{
             </div>
 
 
-            <!-- NOTES -->
-
             <div class="field full">
 
                 <div class="field-label">
@@ -1543,8 +1562,6 @@ body{
 
             </div>
 
-
-            <!-- DAYS LEFT -->
 
             <div class="field full">
 
@@ -1666,17 +1683,22 @@ import {
 
 
 const firebaseConfig = {
-    apiKey: "AIzaSyBNI4CR26Re0xdh-T0XdVyb6fFN7SPgPNA",
-    authDomain: "the-myp-haven.firebaseapp.com",
-    projectId: "the-myp-haven",
-    storageBucket: "the-myp-haven.firebasestorage.app",
-    messagingSenderId: "904577455533",
-    appId: "1:904577455533:web:1d918ee8a3caa547eefd24"
+    apiKey:"AIzaSyBNI4CR26Re0xdh-T0XdVyb6fFN7SPgPNA",
+    authDomain:"the-myp-haven.firebaseapp.com",
+    projectId:"the-myp-haven",
+    storageBucket:"the-myp-haven.firebasestorage.app",
+    messagingSenderId:"904577455533",
+    appId:"1:904577455533:web:1d918ee8a3caa547eefd24"
 };
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
+const app =
+    initializeApp(firebaseConfig);
+
+const auth =
+    getAuth(app);
+
+const db =
+    getFirestore(app);
 
 await setPersistence(
     auth,
@@ -1781,6 +1803,10 @@ let currentCalendarDate = new Date();
 let editingTaskId = null;
 
 let linkType = "";
+
+let dragging = false;
+
+let completed = false;
 
 
 /* =========================================================
@@ -1901,7 +1927,8 @@ const permanentAssignments = [
 
 function formatWelcomeDate(){
 
-    const now = new Date();
+    const now =
+        new Date();
 
     welcomeDate.textContent =
         now.toLocaleDateString(
@@ -1913,17 +1940,55 @@ function formatWelcomeDate(){
                 year:"numeric"
             }
         );
+
 }
 
 formatWelcomeDate();
 
 
 /* =========================================================
-   LOCK-IN SLIDER
+   SHOW DASHBOARD
 ========================================================= */
 
-let dragging = false;
-let completed = false;
+function showDashboard(){
+
+    /*
+       Hide the lock screen.
+    */
+
+    lockScreen.classList.add(
+        "hidden"
+    );
+
+
+    /*
+       Show dashboard.
+    */
+
+    dashboard.classList.add(
+        "visible"
+    );
+
+
+    /*
+       Trigger entrance animation
+       on the next frame.
+    */
+
+    requestAnimationFrame(() => {
+
+        dashboard.classList.add(
+            "entered"
+        );
+
+    });
+
+}
+
+
+/* =========================================================
+   LOCK-IN SLIDER
+========================================================= */
 
 function updateSlider(clientX){
 
@@ -1935,23 +2000,37 @@ function updateSlider(clientX){
     const handleSize =
         capHandle.offsetWidth;
 
-    const min =
-        8;
+    const min = 8;
 
     const max =
-        rect.width - handleSize - 8;
+        Math.max(
+            min,
+            rect.width -
+            handleSize -
+            8
+        );
 
     let x =
-        clientX - rect.left - handleSize / 2;
+        clientX -
+        rect.left -
+        handleSize / 2;
 
     x =
-        Math.max(min,Math.min(x,max));
+        Math.max(
+            min,
+            Math.min(
+                x,
+                max
+            )
+        );
 
     const percentage =
-        (x - min) / (max - min);
+        (x - min) /
+        (max - min);
 
     const percent =
         percentage * 100;
+
 
     capHandle.style.left =
         `${x}px`;
@@ -1959,13 +2038,19 @@ function updateSlider(clientX){
     lockProgress.style.width =
         `${percent}%`;
 
+
     if(percent >= 98){
 
         completeLockIn();
 
     }
+
 }
 
+
+/* =========================================================
+   START DRAG
+========================================================= */
 
 function startDrag(event){
 
@@ -1973,41 +2058,79 @@ function startDrag(event){
 
     dragging = true;
 
-    capHandle.classList.add("dragging");
+    capHandle.classList.add(
+        "dragging"
+    );
 
     const point =
         event.touches
         ? event.touches[0]
         : event;
 
-    updateSlider(point.clientX);
+    updateSlider(
+        point.clientX
+    );
+
+    if(event.cancelable){
+
+        event.preventDefault();
+
+    }
+
 }
 
+
+/* =========================================================
+   DRAG
+========================================================= */
 
 function drag(event){
 
-    if(!dragging || completed) return;
+    if(
+        !dragging ||
+        completed
+    ){
+
+        return;
+
+    }
 
     const point =
         event.touches
         ? event.touches[0]
         : event;
 
-    updateSlider(point.clientX);
+    updateSlider(
+        point.clientX
+    );
 
     if(event.cancelable){
+
         event.preventDefault();
+
     }
+
 }
 
+
+/* =========================================================
+   STOP DRAG
+========================================================= */
 
 function stopDrag(){
 
     dragging = false;
 
-    capHandle.classList.remove("dragging");
+    capHandle.classList.remove(
+        "dragging"
+    );
+
 }
 
+
+/* =========================================================
+   MOUSE EVENTS
+========================================================= */
 
 capHandle.addEventListener(
     "mousedown",
@@ -2024,16 +2147,25 @@ document.addEventListener(
     stopDrag
 );
 
+
+/* =========================================================
+   TOUCH EVENTS
+========================================================= */
+
 capHandle.addEventListener(
     "touchstart",
     startDrag,
-    {passive:false}
+    {
+        passive:false
+    }
 );
 
 document.addEventListener(
     "touchmove",
     drag,
-    {passive:false}
+    {
+        passive:false
+    }
 );
 
 document.addEventListener(
@@ -2042,13 +2174,37 @@ document.addEventListener(
 );
 
 
+/* =========================================================
+   COMPLETE LOCK-IN
+========================================================= */
+
 async function completeLockIn(){
 
     if(completed) return;
 
     completed = true;
 
-    capHandle.classList.remove("dragging");
+    dragging = false;
+
+    capHandle.classList.remove(
+        "dragging"
+    );
+
+
+    /*
+       Force handle to final position.
+    */
+
+    const finalPosition =
+        Math.max(
+            8,
+            lockSlider.offsetWidth -
+            capHandle.offsetWidth -
+            8
+        );
+
+    capHandle.style.left =
+        `${finalPosition}px`;
 
     lockProgress.style.width =
         "100%";
@@ -2056,9 +2212,18 @@ async function completeLockIn(){
     lockText.textContent =
         "We're locked in!";
 
-    try{
 
-        if(currentUser){
+    /*
+       Save Firebase state.
+
+       IMPORTANT:
+       Even if Firebase fails,
+       the dashboard still opens.
+    */
+
+    if(currentUser){
+
+        try{
 
             await setDoc(
                 doc(
@@ -2068,41 +2233,38 @@ async function completeLockIn(){
                 ),
                 {
                     lockedIn:true,
-                    updatedAt:serverTimestamp()
+                    updatedAt:
+                        serverTimestamp()
                 },
                 {
                     merge:true
                 }
             );
 
+        }catch(error){
+
+            console.warn(
+                "Could not save lock-in state. Continuing to dashboard.",
+                error
+            );
+
         }
-
-    }catch(error){
-
-        console.warn(
-            "Could not save lock-in state:",
-            error
-        );
 
     }
 
+
+    /*
+       Give the user the small
+       completed moment before
+       transitioning.
+    */
+
     setTimeout(() => {
 
-        lockScreen.classList.add("hidden");
-
-        setTimeout(() => {
-
-            dashboard.classList.add("visible");
-
-            requestAnimationFrame(() => {
-
-                dashboard.classList.add("entered");
-
-            });
-
-        },400);
+        showDashboard();
 
     },700);
+
 }
 
 
@@ -2120,9 +2282,11 @@ onAuthStateChanged(
                 "./account.html";
 
             return;
+
         }
 
-        currentUser = user;
+        currentUser =
+            user;
 
         await loadUserData();
 
@@ -2146,22 +2310,32 @@ async function loadUserData(){
             );
 
         const snapshot =
-            await getDoc(userRef);
+            await getDoc(
+                userRef
+            );
+
 
         if(snapshot.exists()){
 
             const data =
                 snapshot.data();
 
+
             selectedSubjects =
-                Array.isArray(data.subjects)
+                Array.isArray(
+                    data.subjects
+                )
                 ? data.subjects
                 : [];
 
+
             tasks =
-                Array.isArray(data.tasks)
+                Array.isArray(
+                    data.tasks
+                )
                 ? data.tasks
                 : [];
+
 
             customAssignmentCategories =
                 Array.isArray(
@@ -2170,6 +2344,7 @@ async function loadUserData(){
                 ? data.customAssignmentCategories
                 : [];
 
+
             if(data.backgroundImageUrl){
 
                 dashboardBackground.style.backgroundImage =
@@ -2177,9 +2352,22 @@ async function loadUserData(){
 
             }
 
+
+            /*
+               Render dashboard data.
+            */
+
             renderCourses();
 
             renderCalendar();
+
+
+            /*
+               IMPORTANT FIX:
+               If this user has already
+               completed lock-in, skip
+               the lock screen entirely.
+            */
 
             if(data.lockedIn === true){
 
@@ -2188,15 +2376,45 @@ async function loadUserData(){
                 lockProgress.style.width =
                     "100%";
 
+                const finalPosition =
+                    Math.max(
+                        8,
+                        lockSlider.offsetWidth -
+                        capHandle.offsetWidth -
+                        8
+                    );
+
                 capHandle.style.left =
-                    `${lockSlider.offsetWidth -
-                    capHandle.offsetWidth -
-                    8}px`;
+                    `${finalPosition}px`;
 
                 lockText.textContent =
                     "We're locked in!";
 
+
+                setTimeout(() => {
+
+                    showDashboard();
+
+                },100);
+
             }
+
+        }else{
+
+            /*
+               No Firebase document yet.
+               Start with an empty dashboard.
+            */
+
+            selectedSubjects = [];
+
+            tasks = [];
+
+            customAssignmentCategories = [];
+
+            renderCourses();
+
+            renderCalendar();
 
         }
 
@@ -2214,6 +2432,10 @@ async function loadUserData(){
 }
 
 
+/* =========================================================
+   LOCAL FALLBACK
+========================================================= */
+
 function loadLocalFallback(){
 
     try{
@@ -2225,14 +2447,18 @@ function loadLocalFallback(){
                 ) || "{}"
             );
 
+
         tasks =
             local.tasks || [];
+
 
         selectedSubjects =
             local.subjects || [];
 
+
         customAssignmentCategories =
             local.customAssignmentCategories || [];
+
 
         if(local.backgroundImage){
 
@@ -2243,9 +2469,13 @@ function loadLocalFallback(){
 
     }catch(error){
 
-        console.warn(error);
+        console.warn(
+            "Could not load local dashboard data:",
+            error
+        );
 
     }
+
 
     renderCourses();
 
@@ -2260,11 +2490,14 @@ function loadLocalFallback(){
 
 async function saveDashboard(){
 
+    if(!currentUser) return;
+
     const localData = {
 
         tasks,
 
-        subjects:selectedSubjects,
+        subjects:
+            selectedSubjects,
 
         customAssignmentCategories,
 
@@ -2273,10 +2506,14 @@ async function saveDashboard(){
 
     };
 
+
     localStorage.setItem(
         `mypHavenDashboard_${currentUser.uid}`,
-        JSON.stringify(localData)
+        JSON.stringify(
+            localData
+        )
     );
+
 
     try{
 
@@ -2288,8 +2525,15 @@ async function saveDashboard(){
             ),
             {
                 tasks,
+
+                subjects:
+                    selectedSubjects,
+
                 customAssignmentCategories,
-                updatedAt:serverTimestamp()
+
+                updatedAt:
+                    serverTimestamp()
+
             },
             {
                 merge:true
@@ -2314,8 +2558,13 @@ async function saveDashboard(){
 
 backgroundUploadButton.addEventListener(
     "click",
-    () => backgroundInput.click()
+    () => {
+
+        backgroundInput.click();
+
+    }
 );
+
 
 backgroundInput.addEventListener(
     "change",
@@ -2329,48 +2578,68 @@ backgroundInput.addEventListener(
         const reader =
             new FileReader();
 
-        reader.onload = async e => {
 
-            const image =
-                e.target.result;
+        reader.onload =
+            async e => {
 
-            dashboardBackground.style.backgroundImage =
-                `url("${image}")`;
+                const image =
+                    e.target.result;
 
-            localStorage.setItem(
-                `mypHavenBackground_${currentUser.uid}`,
-                image
-            );
 
-            try{
+                dashboardBackground.style.backgroundImage =
+                    `url("${image}")`;
 
-                await setDoc(
-                    doc(
-                        db,
-                        "users",
-                        currentUser.uid
-                    ),
-                    {
-                        backgroundImageUrl:image,
-                        updatedAt:serverTimestamp()
-                    },
-                    {
-                        merge:true
+
+                if(currentUser){
+
+                    localStorage.setItem(
+                        `mypHavenBackground_${currentUser.uid}`,
+                        image
+                    );
+
+                }
+
+
+                if(currentUser){
+
+                    try{
+
+                        await setDoc(
+                            doc(
+                                db,
+                                "users",
+                                currentUser.uid
+                            ),
+                            {
+                                backgroundImageUrl:
+                                    image,
+
+                                updatedAt:
+                                    serverTimestamp()
+
+                            },
+                            {
+                                merge:true
+                            }
+                        );
+
+                    }catch(error){
+
+                        console.warn(
+                            "Background saved locally:",
+                            error
+                        );
+
                     }
-                );
 
-            }catch(error){
+                }
 
-                console.warn(
-                    "Background saved locally:",
-                    error
-                );
+            };
 
-            }
 
-        };
-
-        reader.readAsDataURL(file);
+        reader.readAsDataURL(
+            file
+        );
 
     }
 );
@@ -2384,56 +2653,87 @@ function renderCourses(){
 
     courseOptions.innerHTML = "";
 
+
     const subjects =
         [
             ...selectedSubjects,
             "Other"
         ];
 
+
     const unique =
         [...new Set(subjects)];
 
-    unique.forEach(subject => {
 
-        const button =
-            document.createElement("button");
+    unique.forEach(
+        subject => {
 
-        button.className =
-            "course-option";
+            const button =
+                document.createElement(
+                    "button"
+                );
 
-        button.textContent =
-            subject;
 
-        button.style.background =
-            subjectColors[subject]
-            || "#E8B8D4";
+            button.className =
+                "course-option";
 
-        button.addEventListener(
-            "click",
-            () => {
 
-                selectedCourse =
-                    subject;
+            button.textContent =
+                subject;
 
-                document
-                    .querySelectorAll(".course-option")
-                    .forEach(
-                        b =>
-                            b.classList.remove(
-                                "selected"
-                            )
-                    );
+
+            button.style.background =
+                subjectColors[
+                    subject
+                ] || "#E8B8D4";
+
+
+            if(
+                selectedCourse ===
+                subject
+            ){
 
                 button.classList.add(
                     "selected"
                 );
 
             }
-        );
 
-        courseOptions.appendChild(button);
 
-    });
+            button.addEventListener(
+                "click",
+                () => {
+
+                    selectedCourse =
+                        subject;
+
+
+                    document
+                        .querySelectorAll(
+                            ".course-option"
+                        )
+                        .forEach(
+                            b =>
+                                b.classList.remove(
+                                    "selected"
+                                )
+                        );
+
+
+                    button.classList.add(
+                        "selected"
+                    );
+
+                }
+            );
+
+
+            courseOptions.appendChild(
+                button
+            );
+
+        }
+    );
 
 }
 
@@ -2450,6 +2750,7 @@ function renderCalendar(){
     const month =
         currentCalendarDate.getMonth();
 
+
     monthTitle.textContent =
         new Date(
             year,
@@ -2463,7 +2764,9 @@ function renderCalendar(){
             }
         );
 
+
     calendarGrid.innerHTML = "";
+
 
     const firstDay =
         new Date(
@@ -2472,12 +2775,14 @@ function renderCalendar(){
             1
         ).getDay();
 
+
     const daysInMonth =
         new Date(
             year,
             month + 1,
             0
         ).getDate();
+
 
     for(
         let i = 0;
@@ -2486,10 +2791,13 @@ function renderCalendar(){
     ){
 
         const empty =
-            document.createElement("div");
+            document.createElement(
+                "div"
+            );
 
         empty.className =
             "day-cell empty";
+
 
         calendarGrid.appendChild(
             empty
@@ -2505,16 +2813,24 @@ function renderCalendar(){
     ){
 
         const cell =
-            document.createElement("div");
+            document.createElement(
+                "div"
+            );
+
 
         cell.className =
             "day-cell";
 
+
         const number =
-            document.createElement("div");
+            document.createElement(
+                "div"
+            );
+
 
         number.className =
             "day-number";
+
 
         number.textContent =
             day;
@@ -2522,6 +2838,7 @@ function renderCalendar(){
 
         const now =
             new Date();
+
 
         if(
             day === now.getDate() &&
@@ -2536,11 +2853,16 @@ function renderCalendar(){
         }
 
 
-        cell.appendChild(number);
+        cell.appendChild(
+            number
+        );
 
 
         const list =
-            document.createElement("div");
+            document.createElement(
+                "div"
+            );
+
 
         list.className =
             "task-list";
@@ -2557,45 +2879,60 @@ function renderCalendar(){
         const dayTasks =
             tasks.filter(
                 task =>
-                    task.date === dateKey
+                    task.date ===
+                    dateKey
             );
 
 
-        dayTasks.forEach(task => {
+        dayTasks.forEach(
+            task => {
 
-            const taskElement =
-                document.createElement("div");
-
-            taskElement.className =
-                "calendar-task";
-
-            taskElement.textContent =
-                task.title || "Untitled";
-
-            taskElement.style.background =
-                getTaskColor(task);
-
-            taskElement.addEventListener(
-                "click",
-                event => {
-
-                    event.stopPropagation();
-
-                    openTaskEditor(
-                        task.id
+                const taskElement =
+                    document.createElement(
+                        "div"
                     );
 
-                }
-            );
 
-            list.appendChild(
-                taskElement
-            );
-
-        });
+                taskElement.className =
+                    "calendar-task";
 
 
-        cell.appendChild(list);
+                taskElement.textContent =
+                    task.title ||
+                    "Untitled";
+
+
+                taskElement.style.background =
+                    getTaskColor(
+                        task
+                    );
+
+
+                taskElement.addEventListener(
+                    "click",
+                    event => {
+
+                        event.stopPropagation();
+
+                        openTaskEditor(
+                            task.id
+                        );
+
+                    }
+                );
+
+
+                list.appendChild(
+                    taskElement
+                );
+
+            }
+        );
+
+
+        cell.appendChild(
+            list
+        );
 
 
         cell.addEventListener(
@@ -2619,6 +2956,10 @@ function renderCalendar(){
 }
 
 
+/* =========================================================
+   DATE KEY
+========================================================= */
+
 function makeDateKey(
     year,
     month,
@@ -2627,8 +2968,18 @@ function makeDateKey(
 
     return [
         year,
-        String(month + 1).padStart(2,"0"),
-        String(day).padStart(2,"0")
+        String(
+            month + 1
+        ).padStart(
+            2,
+            "0"
+        ),
+        String(
+            day
+        ).padStart(
+            2,
+            "0"
+        )
     ].join("-");
 
 }
@@ -2640,9 +2991,15 @@ function makeDateKey(
 
 function getTaskColor(task){
 
-    if(task.status === "Done"){
+    if(
+        task.status ===
+        "Done"
+    ){
+
         return "#D8B9E8";
+
     }
+
 
     if(task.course){
 
@@ -2651,6 +3008,7 @@ function getTaskColor(task){
         ] || "#E8B8D4";
 
     }
+
 
     return "#D9D6E8";
 
@@ -2662,7 +3020,9 @@ function getTaskColor(task){
 ========================================================= */
 
 document
-    .getElementById("previousMonth")
+    .getElementById(
+        "previousMonth"
+    )
     .addEventListener(
         "click",
         () => {
@@ -2681,7 +3041,9 @@ document
 
 
 document
-    .getElementById("nextMonth")
+    .getElementById(
+        "nextMonth"
+    )
     .addEventListener(
         "click",
         () => {
@@ -2700,7 +3062,9 @@ document
 
 
 document
-    .getElementById("todayButton")
+    .getElementById(
+        "todayButton"
+    )
     .addEventListener(
         "click",
         () => {
@@ -2722,30 +3086,41 @@ function openTaskCreator(
     date
 ){
 
-    editingTaskId = null;
+    editingTaskId =
+        null;
 
-    taskTitle.value = "";
+
+    taskTitle.value =
+        "";
+
 
     selectedCourse =
         "";
 
+
     selectedStatus =
         "Not Started";
+
 
     selectedAssignment =
         "";
 
+
     taskDate.value =
         date;
+
 
     lastReview.value =
         "";
 
+
     dueDate.value =
         date;
 
+
     taskNotes.value =
         "";
+
 
     updateDaysLeft();
 
@@ -2754,6 +3129,7 @@ function openTaskCreator(
     renderAssignments();
 
     updateStatusButtons();
+
 
     taskModal.classList.add(
         "open"
@@ -2768,37 +3144,51 @@ function openTaskEditor(
 
     const task =
         tasks.find(
-            t => t.id === taskId
+            t =>
+                t.id ===
+                taskId
         );
 
+
     if(!task) return;
+
 
     editingTaskId =
         taskId;
 
+
     taskTitle.value =
         task.title || "";
+
 
     selectedCourse =
         task.course || "";
 
+
     selectedStatus =
-        task.status || "Not Started";
+        task.status ||
+        "Not Started";
+
 
     selectedAssignment =
         task.assignment || "";
 
+
     taskDate.value =
         task.date || "";
+
 
     lastReview.value =
         task.lastReview || "";
 
+
     dueDate.value =
         task.dueDate || "";
 
+
     taskNotes.value =
         task.notes || "";
+
 
     renderCourses();
 
@@ -2808,6 +3198,7 @@ function openTaskEditor(
 
     updateDaysLeft();
 
+
     taskModal.classList.add(
         "open"
     );
@@ -2816,7 +3207,9 @@ function openTaskEditor(
 
 
 document
-    .getElementById("closeTaskPanel")
+    .getElementById(
+        "closeTaskPanel"
+    )
     .addEventListener(
         "click",
         closeTaskPanel
@@ -2837,37 +3230,47 @@ function closeTaskPanel(){
 ========================================================= */
 
 document
-    .querySelectorAll(".status-option")
-    .forEach(button => {
+    .querySelectorAll(
+        ".status-option"
+    )
+    .forEach(
+        button => {
 
-        button.addEventListener(
-            "click",
-            () => {
+            button.addEventListener(
+                "click",
+                () => {
 
-                selectedStatus =
-                    button.dataset.status;
+                    selectedStatus =
+                        button.dataset.status;
 
-                updateStatusButtons();
+                    updateStatusButtons();
 
-            }
-        );
+                    updateDaysLeft();
 
-    });
+                }
+            );
+
+        }
+    );
 
 
 function updateStatusButtons(){
 
     document
-        .querySelectorAll(".status-option")
-        .forEach(button => {
+        .querySelectorAll(
+            ".status-option"
+        )
+        .forEach(
+            button => {
 
-            button.classList.toggle(
-                "selected",
-                button.dataset.status ===
-                selectedStatus
-            );
+                button.classList.toggle(
+                    "selected",
+                    button.dataset.status ===
+                    selectedStatus
+                );
 
-        });
+            }
+        );
 
 }
 
@@ -2878,7 +3281,9 @@ function updateStatusButtons(){
 
 function renderAssignments(){
 
-    assignmentOptions.innerHTML = "";
+    assignmentOptions.innerHTML =
+        "";
+
 
     const all =
         [
@@ -2886,10 +3291,12 @@ function renderAssignments(){
             ...customAssignmentCategories
         ];
 
+
     const search =
         assignmentSearch.value
             .trim()
             .toLowerCase();
+
 
     const filtered =
         all.filter(
@@ -2900,110 +3307,151 @@ function renderAssignments(){
         );
 
 
-    filtered.forEach(option => {
+    filtered.forEach(
+        option => {
 
-        const row =
-            document.createElement("div");
-
-        row.className =
-            "assignment-option";
-
-        row.style.background =
-            option.color;
-
-        const text =
-            document.createElement("span");
-
-        text.textContent =
-            option.name;
-
-        row.appendChild(text);
+            const row =
+                document.createElement(
+                    "div"
+                );
 
 
-        const permanent =
-            permanentAssignments.some(
-                item =>
-                    item.name === option.name
+            row.className =
+                "assignment-option";
+
+
+            row.style.background =
+                option.color;
+
+
+            const text =
+                document.createElement(
+                    "span"
+                );
+
+
+            text.textContent =
+                option.name;
+
+
+            row.appendChild(
+                text
             );
 
 
-        if(!permanent){
+            const permanent =
+                permanentAssignments.some(
+                    item =>
+                        item.name ===
+                        option.name
+                );
 
-            const menu =
-                document.createElement("button");
 
-            menu.className =
-                "assignment-menu";
+            if(!permanent){
 
-            menu.textContent =
-                "⋯";
-
-            menu.addEventListener(
-                "click",
-                event => {
-
-                    event.stopPropagation();
-
-                    manageCustomCategory(
-                        option
+                const menu =
+                    document.createElement(
+                        "button"
                     );
 
-                }
-            );
 
-            row.appendChild(menu);
-
-        }
+                menu.className =
+                    "assignment-menu";
 
 
-        row.addEventListener(
-            "click",
-            () => {
+                menu.textContent =
+                    "⋯";
 
-                selectedAssignment =
-                    option.name;
 
-                document
-                    .querySelectorAll(
-                        ".assignment-option"
-                    )
-                    .forEach(
-                        item =>
-                            item.style.outline =
-                                "none"
-                    );
+                menu.addEventListener(
+                    "click",
+                    event => {
+
+                        event.stopPropagation();
+
+                        manageCustomCategory(
+                            option
+                        );
+
+                    }
+                );
+
+
+                row.appendChild(
+                    menu
+                );
+
+            }
+
+
+            if(
+                selectedAssignment ===
+                option.name
+            ){
 
                 row.style.outline =
                     "3px solid rgba(0,0,0,.10)";
 
             }
-        );
 
 
-        assignmentOptions.appendChild(
-            row
-        );
+            row.addEventListener(
+                "click",
+                () => {
 
-    });
+                    selectedAssignment =
+                        option.name;
+
+
+                    document
+                        .querySelectorAll(
+                            ".assignment-option"
+                        )
+                        .forEach(
+                            item =>
+                                item.style.outline =
+                                    "none"
+                        );
+
+
+                    row.style.outline =
+                        "3px solid rgba(0,0,0,.10)";
+
+                }
+            );
+
+
+            assignmentOptions.appendChild(
+                row
+            );
+
+        }
+    );
 
 
     if(
         search &&
         !all.some(
             option =>
-                option.name.toLowerCase() ===
+                option.name
+                    .toLowerCase() ===
                 search
         )
     ){
 
         const create =
-            document.createElement("button");
+            document.createElement(
+                "button"
+            );
+
 
         create.className =
             "create-custom";
 
+
         create.textContent =
             `Create ${assignmentSearch.value}`;
+
 
         create.addEventListener(
             "click",
@@ -3015,6 +3463,7 @@ function renderAssignments(){
 
             }
         );
+
 
         assignmentOptions.appendChild(
             create
@@ -3037,28 +3486,31 @@ function createCustomCategory(
 
     if(!name) return;
 
+
     const exists =
-        permanentAssignments
-            .some(
-                x =>
-                    x.name.toLowerCase() ===
-                    name.toLowerCase()
-            ) ||
-        customAssignmentCategories
-            .some(
-                x =>
-                    x.name.toLowerCase() ===
-                    name.toLowerCase()
-            );
+        permanentAssignments.some(
+            x =>
+                x.name.toLowerCase() ===
+                name.toLowerCase()
+        ) ||
+        customAssignmentCategories.some(
+            x =>
+                x.name.toLowerCase() ===
+                name.toLowerCase()
+        );
+
 
     if(exists){
 
         selectedAssignment =
             name;
 
+        renderAssignments();
+
         return;
 
     }
+
 
     const category = {
 
@@ -3068,19 +3520,24 @@ function createCustomCategory(
 
         name,
 
-        color:"#E8B8D4"
+        color:
+            "#E8B8D4"
 
     };
+
 
     customAssignmentCategories.push(
         category
     );
 
+
     selectedAssignment =
         name;
 
+
     assignmentSearch.value =
         "";
+
 
     renderAssignments();
 
@@ -3098,6 +3555,7 @@ function manageCustomCategory(
             `${category.name}\n\nType:\nrename\ncolor\ndelete`
         );
 
+
     if(!action) return;
 
 
@@ -3111,6 +3569,7 @@ function manageCustomCategory(
                 "New category name:",
                 category.name
             );
+
 
         if(name){
 
@@ -3137,9 +3596,12 @@ function manageCustomCategory(
                 category.color
             );
 
+
         if(
             color &&
-            /^#[0-9A-F]{6}$/i.test(color)
+            /^#[0-9A-F]{6}$/i.test(
+                color
+            )
         ){
 
             category.color =
@@ -3164,13 +3626,16 @@ function manageCustomCategory(
                 "Delete this custom category?"
             );
 
+
         if(confirmed){
 
             customAssignmentCategories =
                 customAssignmentCategories.filter(
                     item =>
-                        item.id !== category.id
+                        item.id !==
+                        category.id
                 );
+
 
             if(
                 selectedAssignment ===
@@ -3181,6 +3646,7 @@ function manageCustomCategory(
                     "";
 
             }
+
 
             renderAssignments();
 
@@ -3214,6 +3680,7 @@ function updateDaysLeft(){
 
     }
 
+
     if(
         selectedStatus ===
         "Done"
@@ -3230,15 +3697,21 @@ function updateDaysLeft(){
     const today =
         new Date();
 
+
     today.setHours(
-        0,0,0,0
+        0,
+        0,
+        0,
+        0
     );
+
 
     const due =
         new Date(
             dueDate.value +
             "T00:00:00"
         );
+
 
     const difference =
         Math.round(
@@ -3250,14 +3723,18 @@ function updateDaysLeft(){
         );
 
 
-    if(difference > 0){
+    if(
+        difference > 0
+    ){
 
         daysLeft.value =
             `${difference} Days Left`;
 
     }
 
-    else if(difference === 0){
+    else if(
+        difference === 0
+    ){
 
         daysLeft.value =
             "Due Today";
@@ -3287,6 +3764,7 @@ setInterval(
 
         }
 
+
         renderCalendar();
 
     },
@@ -3299,13 +3777,16 @@ setInterval(
 ========================================================= */
 
 document
-    .getElementById("addTaskButton")
+    .getElementById(
+        "addTaskButton"
+    )
     .addEventListener(
         "click",
         async () => {
 
             const title =
                 taskTitle.value.trim();
+
 
             if(!title){
 
@@ -3353,6 +3834,14 @@ document
             }
 
 
+            const existingTask =
+                tasks.find(
+                    t =>
+                        t.id ===
+                        editingTaskId
+                );
+
+
             const task = {
 
                 id:
@@ -3383,17 +3872,10 @@ document
                     taskNotes.value.trim(),
 
                 createdAt:
+                    existingTask?.createdAt ||
                     new Date().toISOString()
 
             };
-
-
-            const oldTask =
-                tasks.find(
-                    t =>
-                        t.id ===
-                        editingTaskId
-                );
 
 
             if(editingTaskId){
@@ -3409,7 +3891,9 @@ document
 
             }else{
 
-                tasks.push(task);
+                tasks.push(
+                    task
+                );
 
             }
 
@@ -3436,9 +3920,11 @@ function showTaskCelebration(){
         "show"
     );
 
+
     createConfetti(
         70
     );
+
 
     setTimeout(
         () => {
@@ -3465,19 +3951,26 @@ function createConfetti(
     ){
 
         const piece =
-            document.createElement("div");
+            document.createElement(
+                "div"
+            );
+
 
         piece.className =
             "confetti";
 
+
         const pastelColors = [
+
             "#FFB6C1",
             "#FFD6A5",
             "#FDFFB6",
             "#CAFFBF",
             "#BDE0FE",
             "#CDB4DB"
+
         ];
+
 
         piece.style.background =
             pastelColors[
@@ -3487,25 +3980,31 @@ function createConfetti(
                 )
             ];
 
+
         piece.style.left =
             "50%";
 
+
         piece.style.top =
             "50%";
+
 
         piece.style.setProperty(
             "--x",
             `${(Math.random()-.5)*700}px`
         );
 
+
         piece.style.setProperty(
             "--y",
             `${(Math.random()-.5)*500}px`
         );
 
+
         document.body.appendChild(
             piece
         );
+
 
         setTimeout(
             () =>
@@ -3528,10 +4027,14 @@ async function completeTask(
 
     const task =
         tasks.find(
-            t => t.id === taskId
+            t =>
+                t.id ===
+                taskId
         );
 
+
     if(!task) return;
+
 
     if(
         task.status !==
@@ -3540,6 +4043,7 @@ async function completeTask(
 
         task.status =
             "Done";
+
 
         renderCalendar();
 
@@ -3585,50 +4089,72 @@ const linkInput =
 
 
 document
-    .querySelectorAll(".dots")
-    .forEach(button => {
+    .querySelectorAll(
+        ".dots"
+    )
+    .forEach(
+        button => {
 
-        button.addEventListener(
-            "click",
-            event => {
+            button.addEventListener(
+                "click",
+                event => {
 
-                event.stopPropagation();
+                    event.stopPropagation();
 
-                linkType =
-                    button.dataset.link;
 
-                linkPopupTitle.textContent =
-                    linkType === "school"
-                    ? "School Web"
-                    : "Email";
+                    if(!currentUser){
 
-                const saved =
-                    localStorage.getItem(
-                        `mypHaven_${linkType}_${currentUser.uid}`
-                    ) || "";
+                        return;
 
-                linkInput.value =
-                    saved;
+                    }
 
-                linkPopup.classList.add(
-                    "open"
-                );
 
-            }
-        );
+                    linkType =
+                        button.dataset.link;
 
-    });
+
+                    linkPopupTitle.textContent =
+                        linkType === "school"
+                        ? "School Web"
+                        : "Email";
+
+
+                    const saved =
+                        localStorage.getItem(
+                            `mypHaven_${linkType}_${currentUser.uid}`
+                        ) || "";
+
+
+                    linkInput.value =
+                        saved;
+
+
+                    linkPopup.classList.add(
+                        "open"
+                    );
+
+                }
+            );
+
+        }
+    );
 
 
 schoolButton.addEventListener(
     "click",
-    () => openSavedLink("school")
+    () =>
+        openSavedLink(
+            "school"
+        )
 );
 
 
 emailButton.addEventListener(
     "click",
-    () => openSavedLink("email")
+    () =>
+        openSavedLink(
+            "email"
+        )
 );
 
 
@@ -3636,30 +4162,40 @@ function openSavedLink(
     type
 ){
 
+    if(!currentUser) return;
+
+
     const url =
         localStorage.getItem(
             `mypHaven_${type}_${currentUser.uid}`
         );
+
 
     if(!url){
 
         linkType =
             type;
 
+
         linkPopupTitle.textContent =
             type === "school"
             ? "School Web"
             : "Email";
 
-        linkInput.value = "";
+
+        linkInput.value =
+            "";
+
 
         linkPopup.classList.add(
             "open"
         );
 
+
         return;
 
     }
+
 
     window.open(
         url,
@@ -3671,19 +4207,26 @@ function openSavedLink(
 
 
 document
-    .getElementById("saveLink")
+    .getElementById(
+        "saveLink"
+    )
     .addEventListener(
         "click",
         async () => {
 
+            if(!currentUser) return;
+
+
             let url =
                 linkInput.value.trim();
+
 
             if(!url){
 
                 return;
 
             }
+
 
             if(
                 !url.startsWith(
@@ -3695,14 +4238,17 @@ document
             ){
 
                 url =
-                    "https://" + url;
+                    "https://" +
+                    url;
 
             }
+
 
             localStorage.setItem(
                 `mypHaven_${linkType}_${currentUser.uid}`,
                 url
             );
+
 
             try{
 
@@ -3713,6 +4259,7 @@ document
                         currentUser.uid
                     ),
                     {
+
                         [
                             linkType === "school"
                             ? "schoolWebUrl"
@@ -3731,9 +4278,12 @@ document
 
             }catch(error){
 
-                console.warn(error);
+                console.warn(
+                    error
+                );
 
             }
+
 
             linkPopup.classList.remove(
                 "open"
@@ -3744,7 +4294,9 @@ document
 
 
 document
-    .getElementById("cancelLink")
+    .getElementById(
+        "cancelLink"
+    )
     .addEventListener(
         "click",
         () => {
@@ -3773,7 +4325,9 @@ const rubricsPage =
 
 
 document
-    .getElementById("rubricsButton")
+    .getElementById(
+        "rubricsButton"
+    )
     .addEventListener(
         "click",
         () => {
@@ -3781,34 +4335,40 @@ document
             dashboardMain.style.display =
                 "none";
 
+
             rubricsPage.classList.add(
                 "active"
             );
 
-            // Restart animations
+
             const cards =
                 rubricsPage.querySelectorAll(
                     ".rubric-card"
                 );
 
-            cards.forEach(card => {
 
-                card.style.animation =
-                    "none";
+            cards.forEach(
+                card => {
 
-                void card.offsetWidth;
+                    card.style.animation =
+                        "none";
 
-                card.style.animation =
-                    "";
+                    void card.offsetWidth;
 
-            });
+                    card.style.animation =
+                        "";
+
+                }
+            );
 
         }
     );
 
 
 document
-    .getElementById("backFromRubrics")
+    .getElementById(
+        "backFromRubrics"
+    )
     .addEventListener(
         "click",
         () => {
@@ -3816,6 +4376,7 @@ document
             rubricsPage.classList.remove(
                 "active"
             );
+
 
             dashboardMain.style.display =
                 "block";
@@ -3829,7 +4390,9 @@ document
 ========================================================= */
 
 document
-    .getElementById("explanationButton")
+    .getElementById(
+        "explanationButton"
+    )
     .addEventListener(
         "click",
         () => {
@@ -3843,7 +4406,9 @@ document
 
 
 document
-    .getElementById("commandButton")
+    .getElementById(
+        "commandButton"
+    )
     .addEventListener(
         "click",
         () => {
@@ -3857,7 +4422,9 @@ document
 
 
 document
-    .getElementById("gradeButton")
+    .getElementById(
+        "gradeButton"
+    )
     .addEventListener(
         "click",
         () => {
@@ -3871,7 +4438,9 @@ document
 
 
 document
-    .getElementById("supportButton")
+    .getElementById(
+        "supportButton"
+    )
     .addEventListener(
         "click",
         () => {
@@ -3885,7 +4454,9 @@ document
 
 
 document
-    .getElementById("examButton")
+    .getElementById(
+        "examButton"
+    )
     .addEventListener(
         "click",
         () => {
@@ -3917,27 +4488,6 @@ taskModal.addEventListener(
 
     }
 );
-
-
-/* =========================================================
-   INITIAL LOCAL BACKGROUND
-========================================================= */
-
-if(currentUser){
-
-    const savedBackground =
-        localStorage.getItem(
-            `mypHavenBackground_${currentUser.uid}`
-        );
-
-    if(savedBackground){
-
-        dashboardBackground.style.backgroundImage =
-            `url("${savedBackground}")`;
-
-    }
-
-}
 
 
 /* =========================================================
