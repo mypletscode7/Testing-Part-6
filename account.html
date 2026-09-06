@@ -1,0 +1,1189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>MYP Haven — Account</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700;800&family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    /* =========================================================
+       GLOBAL
+    ========================================================= */
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html,
+    body {
+      width: 100%;
+      min-height: 100%;
+    }
+
+    body {
+      font-family: "DM Sans", sans-serif;
+      background: #8B5CF6;
+      color: #222;
+      overflow-x: hidden;
+    }
+
+    button,
+    input {
+      font-family: "DM Sans", sans-serif;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    .screen {
+      min-height: 100vh;
+      width: 100%;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 30px;
+    }
+
+    .screen.active {
+      display: flex;
+    }
+
+    /* =========================================================
+       SCREEN 1 — ACCOUNT CHOICE
+    ========================================================= */
+
+    #account-choice {
+      background: #8B5CF6;
+    }
+
+    .account-choice-card {
+      width: min(1100px, 95vw);
+      min-height: 560px;
+      background: white;
+      border-radius: 42px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 70px 60px;
+      box-shadow: 0 25px 70px rgba(56, 28, 120, 0.22);
+    }
+
+    .logo-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 55px;
+    }
+
+    /*
+      Replace the src below with your actual MYP Haven logo
+      if your logo is stored under a different filename.
+    */
+    .main-logo {
+      width: 190px;
+      max-width: 55vw;
+      height: auto;
+      object-fit: contain;
+    }
+
+    .account-options {
+      width: min(650px, 100%);
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .account-option {
+      width: 100%;
+      min-height: 75px;
+      border: none;
+      border-radius: 24px;
+      font-size: 19px;
+      font-weight: 700;
+      transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        background 0.2s ease;
+    }
+
+    .account-option.create {
+      background: #8B5CF6;
+      color: white;
+    }
+
+    .account-option.login {
+      background: #F1EDFF;
+      color: #8B5CF6;
+    }
+
+    .account-option:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 25px rgba(75, 40, 140, 0.16);
+    }
+
+    .account-option:active {
+      transform: scale(0.98);
+    }
+
+    /* =========================================================
+       FORM SCREENS
+    ========================================================= */
+
+    .form-screen {
+      background: #8B5CF6;
+      align-items: flex-start;
+      padding-top: 55px;
+      padding-bottom: 55px;
+    }
+
+    .form-card {
+      width: min(850px, 94vw);
+      background: white;
+      border-radius: 38px;
+      padding: 55px;
+      box-shadow: 0 25px 70px rgba(56, 28, 120, 0.20);
+    }
+
+    .form-title {
+      font-size: clamp(30px, 4vw, 45px);
+      line-height: 1.05;
+      font-weight: 800;
+      color: #222;
+      margin-bottom: 12px;
+      letter-spacing: -1.2px;
+    }
+
+    .form-subtitle {
+      font-size: 15px;
+      color: #777;
+      margin-bottom: 38px;
+    }
+
+    .form-group {
+      margin-bottom: 24px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 15px;
+      font-weight: 700;
+      margin-bottom: 9px;
+      color: #292929;
+    }
+
+    .form-input {
+      width: 100%;
+      height: 57px;
+      border: 2px solid #E9E4F7;
+      border-radius: 17px;
+      padding: 0 17px;
+      font-size: 16px;
+      outline: none;
+      transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+    }
+
+    .form-input:focus {
+      border-color: #8B5CF6;
+      box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.10);
+    }
+
+    .terms-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      margin: 8px 0 27px;
+      font-size: 14px;
+      line-height: 1.5;
+      color: #555;
+    }
+
+    .terms-row input {
+      width: 19px;
+      height: 19px;
+      margin-top: 2px;
+      accent-color: #8B5CF6;
+      flex-shrink: 0;
+      cursor: pointer;
+    }
+
+    .terms-row a {
+      color: #8B5CF6;
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    .primary-button {
+      width: 100%;
+      min-height: 62px;
+      border: none;
+      border-radius: 20px;
+      background: #8B5CF6;
+      color: white;
+      font-size: 17px;
+      font-weight: 800;
+      transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+    }
+
+    .primary-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 25px rgba(139, 92, 246, 0.25);
+    }
+
+    .primary-button:active {
+      transform: scale(0.98);
+    }
+
+    .secondary-button {
+      width: 100%;
+      min-height: 52px;
+      margin-top: 14px;
+      border: none;
+      border-radius: 17px;
+      background: #F2EEFF;
+      color: #8B5CF6;
+      font-size: 15px;
+      font-weight: 700;
+      transition: background 0.2s ease;
+    }
+
+    .secondary-button:hover {
+      background: #E9E1FF;
+    }
+
+    .back-button {
+      border: none;
+      background: transparent;
+      color: #8B5CF6;
+      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 24px;
+      padding: 0;
+    }
+
+    .back-button:hover {
+      text-decoration: underline;
+    }
+
+    .error-message {
+      display: none;
+      background: #FFF0F2;
+      color: #D62F50;
+      border-radius: 14px;
+      padding: 13px 15px;
+      margin-bottom: 20px;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .error-message.show {
+      display: block;
+    }
+
+    .loading {
+      opacity: 0.65;
+      pointer-events: none;
+    }
+
+    /* =========================================================
+       RESPONSIVE
+    ========================================================= */
+
+    @media (max-width: 700px) {
+
+      .screen {
+        padding: 18px;
+      }
+
+      .account-choice-card {
+        min-height: 500px;
+        padding: 45px 25px;
+        border-radius: 30px;
+      }
+
+      .main-logo {
+        width: 150px;
+      }
+
+      .logo-container {
+        margin-bottom: 40px;
+      }
+
+      .account-option {
+        min-height: 68px;
+        font-size: 16px;
+      }
+
+      .form-screen {
+        padding-top: 25px;
+        padding-bottom: 25px;
+      }
+
+      .form-card {
+        padding: 32px 23px;
+        border-radius: 28px;
+      }
+
+      .form-title {
+        font-size: 31px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- =========================================================
+       SCREEN 1
+       ACCOUNT CHOICE
+  ========================================================== -->
+
+  <section id="account-choice" class="screen active">
+
+    <div class="account-choice-card">
+
+      <div class="logo-container">
+
+        <!--
+          IMPORTANT:
+          Change "assets/images/myp-haven-logo.png"
+          if your existing logo has a different path/name.
+        -->
+        <img
+          src="assets/images/myp-haven-logo.png"
+          alt="MYP Haven"
+          class="main-logo"
+        >
+
+      </div>
+
+      <div class="account-options">
+
+        <button
+          class="account-option create"
+          id="go-create"
+          type="button"
+        >
+          Don't have an account? Create one
+        </button>
+
+        <button
+          class="account-option login"
+          id="go-login"
+          type="button"
+        >
+          Already have an account? Log back in.
+        </button>
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- =========================================================
+       SCREEN 2
+       CREATE ACCOUNT
+  ========================================================== -->
+
+  <section id="create-account" class="screen form-screen">
+
+    <div class="form-card">
+
+      <button
+        type="button"
+        class="back-button"
+        id="back-from-create"
+      >
+        ← Back
+      </button>
+
+      <h1 class="form-title">
+        Create your MYP Haven account
+      </h1>
+
+      <p class="form-subtitle">
+        Create your account to begin your MYP Haven journey.
+      </p>
+
+      <div
+        id="signup-error"
+        class="error-message"
+      ></div>
+
+      <form id="signup-form">
+
+        <!-- Full Name -->
+        <div class="form-group">
+
+          <label for="signup-name">
+            Full Name
+          </label>
+
+          <input
+            type="text"
+            id="signup-name"
+            class="form-input"
+            placeholder="Enter your full name"
+            autocomplete="name"
+            required
+          >
+
+        </div>
+
+
+        <!-- Email -->
+        <div class="form-group">
+
+          <label for="signup-email">
+            Email
+          </label>
+
+          <input
+            type="email"
+            id="signup-email"
+            class="form-input"
+            placeholder="Enter your email"
+            autocomplete="email"
+            required
+          >
+
+        </div>
+
+
+        <!-- Password -->
+        <div class="form-group">
+
+          <label for="signup-password">
+            Password
+          </label>
+
+          <input
+            type="password"
+            id="signup-password"
+            class="form-input"
+            placeholder="Create a password"
+            autocomplete="new-password"
+            required
+          >
+
+        </div>
+
+
+        <!-- Confirm Password -->
+        <div class="form-group">
+
+          <label for="signup-confirm-password">
+            Confirm Password
+          </label>
+
+          <input
+            type="password"
+            id="signup-confirm-password"
+            class="form-input"
+            placeholder="Confirm your password"
+            autocomplete="new-password"
+            required
+          >
+
+        </div>
+
+
+        <!-- Terms -->
+        <label class="terms-row">
+
+          <input
+            type="checkbox"
+            id="terms-checkbox"
+            required
+          >
+
+          <span>
+            I agree to MYP Haven's
+            <a href="#" id="terms-link">
+              Terms & Privacy Policy
+            </a>.
+          </span>
+
+        </label>
+
+
+        <!-- Create -->
+        <button
+          type="submit"
+          class="primary-button"
+          id="create-account-button"
+        >
+          Create Account
+        </button>
+
+      </form>
+
+
+      <!-- Login -->
+      <button
+        type="button"
+        class="secondary-button"
+        id="create-to-login"
+      >
+        Already have an account? Log in
+      </button>
+
+    </div>
+
+  </section>
+
+
+  <!-- =========================================================
+       SCREEN 3
+       LOGIN
+  ========================================================== -->
+
+  <section id="login-account" class="screen form-screen">
+
+    <div class="form-card">
+
+      <button
+        type="button"
+        class="back-button"
+        id="back-from-login"
+      >
+        ← Back
+      </button>
+
+      <h1 class="form-title">
+        Log back in
+      </h1>
+
+      <p class="form-subtitle">
+        Welcome back to MYP Haven.
+      </p>
+
+      <div
+        id="login-error"
+        class="error-message"
+      ></div>
+
+      <form id="login-form">
+
+        <!-- Email -->
+        <div class="form-group">
+
+          <label for="login-email">
+            Email
+          </label>
+
+          <input
+            type="email"
+            id="login-email"
+            class="form-input"
+            placeholder="Enter your email"
+            autocomplete="email"
+            required
+          >
+
+        </div>
+
+
+        <!-- Password -->
+        <div class="form-group">
+
+          <label for="login-password">
+            Password
+          </label>
+
+          <input
+            type="password"
+            id="login-password"
+            class="form-input"
+            placeholder="Enter your password"
+            autocomplete="current-password"
+            required
+          >
+
+        </div>
+
+
+        <button
+          type="submit"
+          class="primary-button"
+          id="login-button"
+        >
+          Log In
+        </button>
+
+      </form>
+
+
+      <button
+        type="button"
+        class="secondary-button"
+        id="login-to-create"
+      >
+        Don't have an account? Create one
+      </button>
+
+    </div>
+
+  </section>
+
+
+  <!-- =========================================================
+       FIREBASE
+  ========================================================== -->
+
+  <script type="module">
+
+    import {
+      initializeApp
+    } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
+
+    import {
+      getAuth,
+      createUserWithEmailAndPassword,
+      signInWithEmailAndPassword,
+      updateProfile,
+      setPersistence,
+      browserLocalPersistence,
+      onAuthStateChanged
+    } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js";
+
+    import {
+      getFirestore,
+      doc,
+      setDoc,
+      serverTimestamp
+    } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
+
+
+    /* =========================================================
+       FIREBASE CONFIG
+    ========================================================== */
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBNI4CR26Re0xdh-T0XdVyb6fFN7SPgPNA",
+      authDomain: "the-myp-haven.firebaseapp.com",
+      projectId: "the-myp-haven",
+      storageBucket: "the-myp-haven.firebasestorage.app",
+      messagingSenderId: "904577455533",
+      appId: "1:904577455533:web:1d918ee8a3caa547eefd24"
+    };
+
+
+    /* =========================================================
+       INITIALIZE FIREBASE
+    ========================================================== */
+
+    const app = initializeApp(firebaseConfig);
+
+    const auth = getAuth(app);
+
+    const db = getFirestore(app);
+
+
+    /* =========================================================
+       PERSIST LOGIN
+    ========================================================== */
+
+    await setPersistence(
+      auth,
+      browserLocalPersistence
+    );
+
+
+    /* =========================================================
+       SCREEN NAVIGATION
+    ========================================================== */
+
+    const screens = {
+      choice: document.getElementById("account-choice"),
+      create: document.getElementById("create-account"),
+      login: document.getElementById("login-account")
+    };
+
+
+    function showScreen(screenName) {
+
+      Object.values(screens).forEach(screen => {
+        screen.classList.remove("active");
+      });
+
+      screens[screenName].classList.add("active");
+
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+      });
+    }
+
+
+    /* =========================================================
+       ACCOUNT CHOICE BUTTONS
+    ========================================================== */
+
+    document
+      .getElementById("go-create")
+      .addEventListener("click", () => {
+
+        showScreen("create");
+
+      });
+
+
+    document
+      .getElementById("go-login")
+      .addEventListener("click", () => {
+
+        showScreen("login");
+
+      });
+
+
+    document
+      .getElementById("back-from-create")
+      .addEventListener("click", () => {
+
+        showScreen("choice");
+
+      });
+
+
+    document
+      .getElementById("back-from-login")
+      .addEventListener("click", () => {
+
+        showScreen("choice");
+
+      });
+
+
+    document
+      .getElementById("create-to-login")
+      .addEventListener("click", () => {
+
+        showScreen("login");
+
+      });
+
+
+    document
+      .getElementById("login-to-create")
+      .addEventListener("click", () => {
+
+        showScreen("create");
+
+      });
+
+
+    /* =========================================================
+       ERROR HANDLING
+    ========================================================== */
+
+    function showError(elementId, message) {
+
+      const element = document.getElementById(elementId);
+
+      element.textContent = message;
+
+      element.classList.add("show");
+
+    }
+
+
+    function clearError(elementId) {
+
+      const element = document.getElementById(elementId);
+
+      element.textContent = "";
+
+      element.classList.remove("show");
+
+    }
+
+
+    function friendlyFirebaseError(error) {
+
+      switch (error.code) {
+
+        case "auth/email-already-in-use":
+          return "An account with this email already exists. Try logging in instead.";
+
+        case "auth/invalid-email":
+          return "Please enter a valid email address.";
+
+        case "auth/weak-password":
+          return "Your password is too weak. Please choose a stronger password.";
+
+        case "auth/user-not-found":
+          return "We couldn't find an account with that email.";
+
+        case "auth/wrong-password":
+        case "auth/invalid-credential":
+          return "The email or password is incorrect.";
+
+        case "auth/too-many-requests":
+          return "Too many attempts. Please wait a little while and try again.";
+
+        case "auth/network-request-failed":
+          return "There was a network problem. Please check your connection.";
+
+        default:
+          return "Something went wrong. Please try again.";
+      }
+
+    }
+
+
+    /* =========================================================
+       CREATE ACCOUNT
+    ========================================================== */
+
+    const signupForm =
+      document.getElementById("signup-form");
+
+    const createButton =
+      document.getElementById("create-account-button");
+
+
+    signupForm.addEventListener("submit", async (event) => {
+
+      event.preventDefault();
+
+      clearError("signup-error");
+
+      const name =
+        document
+          .getElementById("signup-name")
+          .value
+          .trim();
+
+      const email =
+        document
+          .getElementById("signup-email")
+          .value
+          .trim();
+
+      const password =
+        document
+          .getElementById("signup-password")
+          .value;
+
+      const confirmPassword =
+        document
+          .getElementById("signup-confirm-password")
+          .value;
+
+      const termsAccepted =
+        document
+          .getElementById("terms-checkbox")
+          .checked;
+
+
+      /* -----------------------------------------
+         Validation
+      ----------------------------------------- */
+
+      if (!name) {
+
+        showError(
+          "signup-error",
+          "Please enter your full name."
+        );
+
+        return;
+      }
+
+
+      if (password !== confirmPassword) {
+
+        showError(
+          "signup-error",
+          "Your passwords do not match."
+        );
+
+        return;
+      }
+
+
+      if (!termsAccepted) {
+
+        showError(
+          "signup-error",
+          "You must agree to the Terms & Privacy Policy."
+        );
+
+        return;
+      }
+
+
+      try {
+
+        createButton.textContent = "Creating Account...";
+        createButton.classList.add("loading");
+
+
+        /* -----------------------------------------
+           Firebase Authentication
+        ----------------------------------------- */
+
+        const credential =
+          await createUserWithEmailAndPassword(
+            auth,
+            email,
+            password
+          );
+
+
+        const user = credential.user;
+
+
+        /* -----------------------------------------
+           Save display name
+        ----------------------------------------- */
+
+        await updateProfile(user, {
+          displayName: name
+        });
+
+
+        /* -----------------------------------------
+           Create Firestore user document
+        ----------------------------------------- */
+
+        await setDoc(
+          doc(db, "users", user.uid),
+          {
+            uid: user.uid,
+
+            fullName: name,
+
+            email: email,
+
+            mypYear: null,
+
+            subjects: [],
+
+            surveyCompleted: false,
+
+            lockedIn: false,
+
+            termsAccepted: true,
+
+            createdAt: serverTimestamp(),
+
+            updatedAt: serverTimestamp()
+          },
+          {
+            merge: true
+          }
+        );
+
+
+        /* -----------------------------------------
+           Temporary local storage
+        ----------------------------------------- */
+
+        localStorage.setItem(
+          "mypHavenName",
+          name
+        );
+
+
+        /*
+          The survey is the next stage.
+        */
+
+        window.location.href = "./survey.html";
+
+      }
+
+      catch (error) {
+
+        console.error(
+          "Account creation error:",
+          error
+        );
+
+        showError(
+          "signup-error",
+          friendlyFirebaseError(error)
+        );
+
+      }
+
+      finally {
+
+        createButton.textContent = "Create Account";
+
+        createButton.classList.remove("loading");
+
+      }
+
+    });
+
+
+    /* =========================================================
+       LOGIN
+    ========================================================== */
+
+    const loginForm =
+      document.getElementById("login-form");
+
+    const loginButton =
+      document.getElementById("login-button");
+
+
+    loginForm.addEventListener("submit", async (event) => {
+
+      event.preventDefault();
+
+      clearError("login-error");
+
+      const email =
+        document
+          .getElementById("login-email")
+          .value
+          .trim();
+
+      const password =
+        document
+          .getElementById("login-password")
+          .value;
+
+
+      try {
+
+        loginButton.textContent = "Logging In...";
+        loginButton.classList.add("loading");
+
+
+        const credential =
+          await signInWithEmailAndPassword(
+            auth,
+            email,
+            password
+          );
+
+
+        const user = credential.user;
+
+
+        /* -----------------------------------------
+           Make sure the user's Firestore document
+           exists and preserves existing data.
+        ----------------------------------------- */
+
+        await setDoc(
+          doc(db, "users", user.uid),
+          {
+            uid: user.uid,
+
+            email: user.email || "",
+
+            fullName: user.displayName || "",
+
+            updatedAt: serverTimestamp()
+          },
+          {
+            merge: true
+          }
+        );
+
+
+        /*
+          Returning users go directly to their
+          saved dashboard.
+        */
+
+        window.location.href = "./dashboard.html";
+
+      }
+
+      catch (error) {
+
+        console.error(
+          "Login error:",
+          error
+        );
+
+        showError(
+          "login-error",
+          friendlyFirebaseError(error)
+        );
+
+      }
+
+      finally {
+
+        loginButton.textContent = "Log In";
+
+        loginButton.classList.remove("loading");
+
+      }
+
+    });
+
+
+    /* =========================================================
+       AUTH STATE
+    ========================================================== */
+
+    onAuthStateChanged(auth, (user) => {
+
+      if (user) {
+
+        console.log(
+          "MYP Haven user:",
+          user.email
+        );
+
+      } else {
+
+        console.log(
+          "No MYP Haven user currently signed in."
+        );
+
+      }
+
+    });
+
+
+    /* =========================================================
+       TERMS LINK
+    ========================================================== */
+
+    document
+      .getElementById("terms-link")
+      .addEventListener("click", (event) => {
+
+        event.preventDefault();
+
+        /*
+          Placeholder for your future Terms &
+          Privacy Policy page.
+        */
+
+        alert(
+          "MYP Haven's Terms & Privacy Policy will be available here."
+        );
+
+      });
+
+  </script>
+
+</body>
+</html>
