@@ -1,0 +1,3952 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>MYP Haven — Dashboard</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700;800&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
+
+html,body{
+    width:100%;
+    min-height:100%;
+}
+
+body{
+    font-family:"DM Sans",sans-serif;
+    background:#A855F7;
+    color:#171717;
+    overflow-x:hidden;
+}
+
+/* =========================================================
+   LOCK-IN SCREEN
+========================================================= */
+
+.lock-screen{
+    min-height:100vh;
+    width:100%;
+    padding:35px 18px;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    transition:
+        opacity .9s ease,
+        transform .9s ease,
+        visibility .9s ease;
+}
+
+.lock-screen.hidden{
+    opacity:0;
+    transform:translateY(-35px) scale(.98);
+    visibility:hidden;
+    pointer-events:none;
+    position:absolute;
+}
+
+.current-date{
+    color:#D946EF;
+    font-size:18px;
+    font-weight:700;
+    text-align:center;
+    margin-bottom:8px;
+}
+
+.welcome-title{
+    color:white;
+    font-family:"Bricolage Grotesque",sans-serif;
+    font-size:clamp(3.5rem,8vw,7rem);
+    font-weight:800;
+    letter-spacing:-.055em;
+    line-height:.95;
+    text-align:center;
+    margin-bottom:45px;
+}
+
+.lock-slider{
+    width:calc(100vw - 36px);
+    max-width:1700px;
+    height:125px;
+    border-radius:100px;
+    background:#eeeeee;
+    position:relative;
+    overflow:hidden;
+    user-select:none;
+    touch-action:none;
+    box-shadow:
+        inset 0 1px 2px rgba(0,0,0,.04),
+        0 12px 40px rgba(0,0,0,.10);
+}
+
+.lock-progress{
+    position:absolute;
+    inset:0 auto 0 0;
+    width:0%;
+    border-radius:100px;
+    background:
+        linear-gradient(
+            90deg,
+            #FF4D6D 0%,
+            #FF8A3D 5.88%,
+            #FFD23F 11.76%,
+            #7ED957 17.64%,
+            #39D6C0 23.52%,
+            #34D399 29.40%,
+            #00C2FF 35.28%,
+            #3B82F6 41.16%,
+            #8B5CF6 47.04%,
+            #A855F7 52.92%,
+            #FF6FB5 58.80%,
+            #D946EF 64.68%,
+            #C026D3 70.56%,
+            #A21CAF 76.44%,
+            #86198F 82.32%,
+            #6366F1 88.20%,
+            #818CF8 94.10%,
+            #22D3EE 100%
+        );
+    transition:width .04s linear;
+}
+
+.lock-text{
+    position:absolute;
+    inset:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:white;
+    font-size:clamp(1.2rem,2.5vw,2rem);
+    font-weight:700;
+    pointer-events:none;
+    z-index:5;
+}
+
+.cap-handle{
+    width:108px;
+    height:108px;
+    border-radius:50%;
+    background:white;
+    position:absolute;
+    left:8px;
+    top:8.5px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:55px;
+    cursor:grab;
+    z-index:10;
+    box-shadow:
+        0 8px 22px rgba(0,0,0,.16),
+        0 2px 7px rgba(0,0,0,.10);
+    transition:
+        transform .15s ease,
+        box-shadow .15s ease;
+}
+
+.cap-handle.dragging{
+    cursor:grabbing;
+    transform:scale(.94);
+    box-shadow:
+        0 5px 14px rgba(0,0,0,.18);
+}
+
+/* =========================================================
+   MAIN DASHBOARD
+========================================================= */
+
+.dashboard{
+    min-height:100vh;
+    position:relative;
+    padding:25px;
+    display:none;
+    opacity:0;
+    transform:translateY(30px);
+    transition:
+        opacity 1s ease,
+        transform 1s ease;
+}
+
+.dashboard.visible{
+    display:block;
+}
+
+.dashboard.entered{
+    opacity:1;
+    transform:translateY(0);
+}
+
+.dashboard-background{
+    position:fixed;
+    inset:0;
+    z-index:-3;
+    background:#f5f5f5 center/cover no-repeat;
+}
+
+.dashboard-overlay{
+    position:fixed;
+    inset:0;
+    z-index:-2;
+    background:rgba(255,255,255,.76);
+    backdrop-filter:blur(2px);
+}
+
+.dashboard-content{
+    width:100%;
+    max-width:1550px;
+    margin:0 auto;
+}
+
+/* =========================================================
+   TOP BAR
+========================================================= */
+
+.dashboard-top{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:15px;
+    margin-bottom:22px;
+}
+
+.dashboard-logo{
+    font-family:"Bricolage Grotesque",sans-serif;
+    font-size:30px;
+    font-weight:800;
+    color:#8B5CF6;
+    letter-spacing:-.04em;
+}
+
+.top-actions{
+    display:flex;
+    gap:10px;
+}
+
+.background-button{
+    border:none;
+    border-radius:18px;
+    padding:12px 17px;
+    background:white;
+    font-family:"DM Sans",sans-serif;
+    font-weight:700;
+    cursor:pointer;
+    box-shadow:0 6px 20px rgba(0,0,0,.08);
+    transition:.2s ease;
+}
+
+.background-button:hover{
+    transform:translateY(-2px);
+}
+
+/* =========================================================
+   MAIN LAYOUT
+========================================================= */
+
+.dashboard-layout{
+    display:grid;
+    grid-template-columns:230px minmax(0,1fr);
+    gap:20px;
+    align-items:start;
+}
+
+/* =========================================================
+   SIDE TABS
+========================================================= */
+
+.sidebar{
+    display:flex;
+    flex-direction:column;
+    gap:11px;
+}
+
+.side-tab-wrap{
+    position:relative;
+}
+
+.side-tab{
+    width:100%;
+    border:none;
+    padding:17px 16px;
+    border-radius:18px;
+    font-family:"DM Sans",sans-serif;
+    font-size:15px;
+    font-weight:700;
+    text-align:left;
+    cursor:pointer;
+    transition:
+        transform .2s ease,
+        box-shadow .2s ease;
+}
+
+.side-tab:hover{
+    transform:translateX(4px);
+    box-shadow:0 7px 20px rgba(0,0,0,.08);
+}
+
+.side-tab.school{
+    background:#B8DDF2;
+}
+
+.side-tab.email{
+    background:#F9C6D0;
+}
+
+.side-tab.rubrics{
+    background:#C8B9E8;
+}
+
+.side-tab.explanation{
+    background:#B8E3D1;
+}
+
+.side-tab.command{
+    background:#FDE3A7;
+}
+
+.side-tab.grade{
+    background:#BFD7F2;
+}
+
+.side-tab.support{
+    background:#F6C1A5;
+}
+
+.side-tab.exam{
+    background:#D8B4E8;
+}
+
+.dots{
+    position:absolute;
+    right:8px;
+    top:50%;
+    transform:translateY(-50%);
+    width:32px;
+    height:32px;
+    border:none;
+    background:rgba(255,255,255,.45);
+    border-radius:50%;
+    cursor:pointer;
+    font-size:18px;
+    z-index:3;
+}
+
+/* =========================================================
+   CALENDAR
+========================================================= */
+
+.calendar-card{
+    background:rgba(255,255,255,.94);
+    border-radius:32px;
+    padding:25px;
+    box-shadow:
+        0 15px 50px rgba(0,0,0,.08);
+    backdrop-filter:blur(12px);
+}
+
+.calendar-header{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:20px;
+}
+
+.month-title{
+    font-family:"Bricolage Grotesque",sans-serif;
+    font-size:clamp(1.8rem,4vw,3rem);
+    font-weight:800;
+    letter-spacing:-.045em;
+}
+
+.calendar-nav{
+    display:flex;
+    align-items:center;
+    gap:8px;
+}
+
+.calendar-nav button{
+    border:none;
+    background:transparent;
+    font-family:"DM Sans",sans-serif;
+    font-weight:700;
+    cursor:pointer;
+    color:#777;
+    padding:7px 10px;
+    border-radius:12px;
+    transition:.2s ease;
+}
+
+.calendar-nav button:hover{
+    background:#f3f3f3;
+    color:#222;
+}
+
+.weekdays,
+.calendar-grid{
+    display:grid;
+    grid-template-columns:repeat(7,1fr);
+}
+
+.weekday{
+    padding:12px 6px;
+    text-align:center;
+    font-size:13px;
+    font-weight:700;
+}
+
+.weekday.weekend{
+    background:#eeeeee;
+}
+
+.weekday.weekday-week{
+    background:white;
+}
+
+.calendar-grid{
+    border-radius:20px;
+    overflow:hidden;
+    border:1px solid #ededed;
+}
+
+.day-cell{
+    min-height:125px;
+    background:white;
+    border-right:1px solid #ededed;
+    border-bottom:1px solid #ededed;
+    position:relative;
+    padding:8px;
+    cursor:pointer;
+    transition:.15s ease;
+}
+
+.day-cell:hover{
+    background:#fafafa;
+}
+
+.day-cell:nth-child(7n),
+.day-cell:nth-child(7n-1){
+    background:#f1f1f1;
+}
+
+.day-cell.empty{
+    cursor:default;
+    background:#f7f7f7;
+}
+
+.day-number{
+    position:absolute;
+    top:8px;
+    right:9px;
+    width:28px;
+    height:28px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:13px;
+    font-weight:700;
+}
+
+.today-number{
+    background:#FF4D6D;
+    color:white;
+    border-radius:50%;
+}
+
+.task-list{
+    position:absolute;
+    left:7px;
+    right:7px;
+    top:43px;
+    display:flex;
+    flex-direction:column;
+    gap:4px;
+}
+
+.calendar-task{
+    border-radius:8px;
+    padding:5px 7px;
+    font-size:11px;
+    font-weight:700;
+    overflow:hidden;
+    white-space:nowrap;
+    text-overflow:ellipsis;
+}
+
+/* =========================================================
+   TASK PANEL
+========================================================= */
+
+.modal-backdrop{
+    position:fixed;
+    inset:0;
+    background:rgba(255,255,255,.34);
+    backdrop-filter:blur(10px);
+    z-index:100;
+    display:none;
+    padding:18px;
+    overflow:auto;
+}
+
+.modal-backdrop.open{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+.task-panel{
+    width:min(1250px,100%);
+    max-height:calc(100vh - 36px);
+    overflow:auto;
+    background:white;
+    border-radius:35px;
+    padding:45px;
+    box-shadow:0 25px 90px rgba(0,0,0,.18);
+    position:relative;
+    animation:panelIn .35s ease;
+}
+
+@keyframes panelIn{
+    from{
+        opacity:0;
+        transform:translateY(25px) scale(.98);
+    }
+    to{
+        opacity:1;
+        transform:translateY(0) scale(1);
+    }
+}
+
+.close-panel{
+    position:absolute;
+    right:25px;
+    top:22px;
+    width:43px;
+    height:43px;
+    border:none;
+    border-radius:50%;
+    background:#f2f2f2;
+    cursor:pointer;
+    font-size:22px;
+}
+
+.task-title{
+    border:none;
+    outline:none;
+    width:100%;
+    font-family:"Bricolage Grotesque",sans-serif;
+    font-size:clamp(2.5rem,6vw,5rem);
+    font-weight:800;
+    color:#222;
+    letter-spacing:-.055em;
+    margin-bottom:35px;
+}
+
+.task-title::placeholder{
+    color:#cfcfcf;
+}
+
+.form-grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:28px;
+}
+
+.field{
+    display:flex;
+    flex-direction:column;
+    gap:9px;
+}
+
+.field.full{
+    grid-column:1/-1;
+}
+
+.field-label{
+    font-size:13px;
+    font-weight:700;
+    color:#777;
+}
+
+.field input,
+.field textarea,
+.field select{
+    width:100%;
+    border:1px solid #e5e5e5;
+    background:#fafafa;
+    border-radius:15px;
+    padding:14px 15px;
+    font-family:"DM Sans",sans-serif;
+    font-size:15px;
+    outline:none;
+    transition:.2s ease;
+}
+
+.field input:focus,
+.field textarea:focus,
+.field select:focus{
+    border-color:#A855F7;
+    background:white;
+}
+
+.field textarea{
+    min-height:130px;
+    resize:vertical;
+}
+
+/* Course choices */
+
+.course-options{
+    display:flex;
+    flex-wrap:wrap;
+    gap:9px;
+}
+
+.course-option{
+    border:2px solid transparent;
+    border-radius:13px;
+    padding:11px 14px;
+    font-family:"DM Sans",sans-serif;
+    font-weight:700;
+    cursor:pointer;
+    transition:.2s ease;
+}
+
+.course-option.selected{
+    transform:translateY(-2px);
+    box-shadow:0 5px 15px rgba(0,0,0,.09);
+}
+
+/* Mastery */
+
+.status-options{
+    display:flex;
+    flex-direction:column;
+    border:1px solid #ececec;
+    border-radius:17px;
+    overflow:hidden;
+}
+
+.status-group{
+    padding:14px;
+    border-bottom:1px solid #e5e5e5;
+}
+
+.status-group:last-child{
+    border-bottom:none;
+}
+
+.status-group-title{
+    font-size:12px;
+    font-weight:800;
+    text-transform:uppercase;
+    color:#777;
+    margin-bottom:8px;
+}
+
+.status-option{
+    display:inline-flex;
+    align-items:center;
+    border:none;
+    border-radius:11px;
+    padding:9px 13px;
+    font-family:"DM Sans",sans-serif;
+    font-weight:700;
+    cursor:pointer;
+    transition:.2s ease;
+}
+
+.status-option.selected{
+    outline:3px solid rgba(0,0,0,.08);
+}
+
+/* Assignment */
+
+.assignment-search{
+    margin-bottom:12px;
+}
+
+.assignment-options{
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+}
+
+.assignment-option{
+    border:none;
+    border-radius:13px;
+    padding:13px 15px;
+    font-family:"DM Sans",sans-serif;
+    font-weight:700;
+    text-align:left;
+    cursor:pointer;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.assignment-option:hover{
+    filter:brightness(.97);
+}
+
+.assignment-menu{
+    border:none;
+    background:rgba(255,255,255,.45);
+    width:28px;
+    height:28px;
+    border-radius:50%;
+    cursor:pointer;
+}
+
+.create-custom{
+    border:2px dashed #bbb;
+    border-radius:13px;
+    padding:12px;
+    background:white;
+    cursor:pointer;
+    font-family:"DM Sans",sans-serif;
+    font-weight:700;
+    text-align:left;
+}
+
+/* Add */
+
+.add-task{
+    margin-top:35px;
+    width:100%;
+    border:none;
+    background:#A7E8BD;
+    border-radius:18px;
+    padding:18px;
+    font-family:"DM Sans",sans-serif;
+    font-size:17px;
+    font-weight:800;
+    cursor:pointer;
+    transition:.2s ease;
+}
+
+.add-task:hover{
+    transform:translateY(-2px);
+    box-shadow:0 10px 25px rgba(0,0,0,.08);
+}
+
+/* =========================================================
+   CELEBRATION
+========================================================= */
+
+.celebration{
+    position:fixed;
+    inset:0;
+    z-index:300;
+    display:none;
+    align-items:center;
+    justify-content:center;
+    flex-direction:column;
+    background:rgba(255,255,255,.5);
+    backdrop-filter:blur(14px);
+}
+
+.celebration.show{
+    display:flex;
+}
+
+.checkmark{
+    width:110px;
+    height:110px;
+    border-radius:50%;
+    background:#A7E8BD;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:60px;
+    animation:checkPop .65s cubic-bezier(.17,.89,.32,1.35);
+}
+
+@keyframes checkPop{
+    0%{
+        transform:scale(.3);
+        opacity:0;
+    }
+    70%{
+        transform:scale(1.12);
+    }
+    100%{
+        transform:scale(1);
+        opacity:1;
+    }
+}
+
+.celebration h2{
+    font-family:"Bricolage Grotesque",sans-serif;
+    font-size:clamp(2.4rem,6vw,5rem);
+    margin-top:20px;
+    letter-spacing:-.05em;
+}
+
+.celebration p{
+    margin-top:7px;
+    color:#666;
+}
+
+.confetti{
+    position:absolute;
+    width:9px;
+    height:14px;
+    border-radius:3px;
+    animation:confettiFall 1.8s ease-out forwards;
+}
+
+@keyframes confettiFall{
+    from{
+        transform:translate(0,0) rotate(0);
+        opacity:1;
+    }
+    to{
+        transform:translate(var(--x),var(--y)) rotate(600deg);
+        opacity:0;
+    }
+}
+
+/* =========================================================
+   RUBRICS PAGE
+========================================================= */
+
+.section-page{
+    display:none;
+    min-height:calc(100vh - 100px);
+    background:rgba(255,255,255,.94);
+    border-radius:35px;
+    padding:60px 30px;
+    text-align:center;
+}
+
+.section-page.active{
+    display:block;
+}
+
+.section-page h1{
+    font-family:"Bricolage Grotesque",sans-serif;
+    font-size:clamp(3rem,7vw,6rem);
+    letter-spacing:-.06em;
+    animation:rubricTitle 1.1s ease forwards;
+}
+
+@keyframes rubricTitle{
+    from{
+        opacity:0;
+        filter:blur(10px);
+        transform:translateY(35px);
+    }
+    to{
+        opacity:1;
+        filter:blur(0);
+        transform:translateY(0);
+    }
+}
+
+.rubric-cards{
+    display:flex;
+    justify-content:center;
+    flex-wrap:wrap;
+    gap:18px;
+    margin-top:50px;
+}
+
+.rubric-card{
+    width:115px;
+    height:115px;
+    border-radius:27px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-family:"Bricolage Grotesque",sans-serif;
+    font-size:38px;
+    font-weight:800;
+    opacity:0;
+    transform:scale(.55);
+    animation:rubricPop .65s cubic-bezier(.17,.89,.32,1.35) forwards;
+}
+
+.rubric-card:nth-child(1){
+    background:#F9C6D0;
+    animation-delay:.6s;
+}
+
+.rubric-card:nth-child(2){
+    background:#B8DDF2;
+    animation-delay:.82s;
+}
+
+.rubric-card:nth-child(3){
+    background:#FDE3A7;
+    animation-delay:1.04s;
+}
+
+.rubric-card:nth-child(4){
+    background:#C8B9E8;
+    animation-delay:1.26s;
+}
+
+@keyframes rubricPop{
+    0%{
+        opacity:0;
+        transform:scale(.55);
+    }
+    75%{
+        opacity:1;
+        transform:scale(1.08);
+    }
+    100%{
+        opacity:1;
+        transform:scale(1);
+    }
+}
+
+.back-dashboard{
+    margin-top:50px;
+    border:none;
+    background:#f1f1f1;
+    border-radius:15px;
+    padding:13px 20px;
+    font-family:"DM Sans",sans-serif;
+    font-weight:700;
+    cursor:pointer;
+}
+
+/* =========================================================
+   LINK POPUP
+========================================================= */
+
+.small-popup{
+    position:fixed;
+    z-index:250;
+    left:50%;
+    top:50%;
+    transform:translate(-50%,-50%);
+    background:white;
+    width:min(500px,calc(100% - 30px));
+    border-radius:25px;
+    padding:28px;
+    box-shadow:0 25px 80px rgba(0,0,0,.2);
+    display:none;
+}
+
+.small-popup.open{
+    display:block;
+}
+
+.small-popup h3{
+    font-family:"Bricolage Grotesque",sans-serif;
+    font-size:28px;
+    margin-bottom:17px;
+}
+
+.small-popup input{
+    width:100%;
+    border:1px solid #ddd;
+    border-radius:13px;
+    padding:13px;
+    font-family:"DM Sans",sans-serif;
+}
+
+.popup-buttons{
+    display:flex;
+    gap:8px;
+    margin-top:15px;
+}
+
+.popup-buttons button{
+    flex:1;
+    border:none;
+    border-radius:13px;
+    padding:12px;
+    font-family:"DM Sans",sans-serif;
+    font-weight:700;
+    cursor:pointer;
+}
+
+.save-link{
+    background:#A7E8BD;
+}
+
+.cancel-link{
+    background:#eee;
+}
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media(max-width:1000px){
+    .dashboard-layout{
+        grid-template-columns:1fr;
+    }
+
+    .sidebar{
+        display:grid;
+        grid-template-columns:repeat(2,1fr);
+    }
+
+    .side-tab{
+        text-align:center;
+    }
+}
+
+@media(max-width:700px){
+    .lock-slider{
+        height:95px;
+    }
+
+    .cap-handle{
+        width:81px;
+        height:81px;
+        top:7px;
+        left:7px;
+        font-size:40px;
+    }
+
+    .lock-text{
+        font-size:1rem;
+        padding-left:65px;
+    }
+
+    .dashboard{
+        padding:12px;
+    }
+
+    .dashboard-top{
+        flex-direction:column;
+        align-items:stretch;
+    }
+
+    .dashboard-logo{
+        text-align:center;
+    }
+
+    .top-actions{
+        justify-content:center;
+    }
+
+    .sidebar{
+        grid-template-columns:1fr;
+    }
+
+    .calendar-card{
+        padding:12px;
+        border-radius:24px;
+    }
+
+    .calendar-header{
+        gap:5px;
+    }
+
+    .month-title{
+        font-size:1.7rem;
+    }
+
+    .day-cell{
+        min-height:80px;
+        padding:4px;
+    }
+
+    .day-number{
+        top:4px;
+        right:4px;
+        width:24px;
+        height:24px;
+        font-size:11px;
+    }
+
+    .task-list{
+        top:33px;
+        left:3px;
+        right:3px;
+    }
+
+    .calendar-task{
+        font-size:8px;
+        padding:3px;
+    }
+
+    .task-panel{
+        padding:28px 18px;
+        border-radius:25px;
+    }
+
+    .form-grid{
+        grid-template-columns:1fr;
+    }
+
+    .field.full{
+        grid-column:auto;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<!-- =========================================================
+     LOCK-IN SCREEN
+========================================================= -->
+
+<section class="lock-screen" id="lockScreen">
+
+    <div class="current-date" id="welcomeDate"></div>
+
+    <h1 class="welcome-title">
+        Welcome Back!
+    </h1>
+
+    <div class="lock-slider" id="lockSlider">
+
+        <div class="lock-progress" id="lockProgress"></div>
+
+        <div class="lock-text" id="lockText">
+            Are we ready to lock in?
+        </div>
+
+        <div class="cap-handle" id="capHandle">
+            🎓
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================================================
+     DASHBOARD
+========================================================= -->
+
+<main class="dashboard" id="dashboard">
+
+    <div class="dashboard-background" id="dashboardBackground"></div>
+    <div class="dashboard-overlay"></div>
+
+    <div class="dashboard-content">
+
+        <div class="dashboard-top">
+
+            <div class="dashboard-logo">
+                MYP Haven
+            </div>
+
+            <div class="top-actions">
+
+                <button class="background-button" id="backgroundUploadButton">
+                    🖼️ Change Background
+                </button>
+
+                <input
+                    type="file"
+                    id="backgroundInput"
+                    accept="image/*"
+                    hidden
+                >
+
+            </div>
+
+        </div>
+
+
+        <div class="dashboard-layout">
+
+            <!-- SIDEBAR -->
+
+            <aside class="sidebar">
+
+                <div class="side-tab-wrap">
+                    <button
+                        class="side-tab school"
+                        id="schoolButton"
+                    >
+                        School Web
+                    </button>
+
+                    <button
+                        class="dots"
+                        data-link="school"
+                    >
+                        ⋯
+                    </button>
+                </div>
+
+
+                <div class="side-tab-wrap">
+                    <button
+                        class="side-tab email"
+                        id="emailButton"
+                    >
+                        Email
+                    </button>
+
+                    <button
+                        class="dots"
+                        data-link="email"
+                    >
+                        ⋯
+                    </button>
+                </div>
+
+
+                <button
+                    class="side-tab rubrics"
+                    id="rubricsButton"
+                >
+                    Rubrics
+                </button>
+
+
+                <button
+                    class="side-tab explanation"
+                    id="explanationButton"
+                >
+                    Explanation Pages
+                </button>
+
+
+                <button
+                    class="side-tab command"
+                    id="commandButton"
+                >
+                    Command-Term Database
+                </button>
+
+
+                <button
+                    class="side-tab grade"
+                    id="gradeButton"
+                >
+                    Grade Calculator
+                </button>
+
+
+                <button
+                    class="side-tab support"
+                    id="supportButton"
+                >
+                    Study & Work Support
+                </button>
+
+
+                <button
+                    class="side-tab exam"
+                    id="examButton"
+                >
+                    Exam Season ’27
+                </button>
+
+            </aside>
+
+
+            <!-- MAIN AREA -->
+
+            <section id="dashboardMain">
+
+                <div class="calendar-card">
+
+                    <div class="calendar-header">
+
+                        <h2
+                            class="month-title"
+                            id="monthTitle"
+                        ></h2>
+
+                        <div class="calendar-nav">
+
+                            <button id="previousMonth">
+                                ←
+                            </button>
+
+                            <button id="todayButton">
+                                Today
+                            </button>
+
+                            <button id="nextMonth">
+                                →
+                            </button>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="weekdays">
+
+                        <div class="weekday weekend">Sun</div>
+                        <div class="weekday weekday-week">Mon</div>
+                        <div class="weekday weekday-week">Tue</div>
+                        <div class="weekday weekday-week">Wed</div>
+                        <div class="weekday weekday-week">Thu</div>
+                        <div class="weekday weekday-week">Fri</div>
+                        <div class="weekday weekend">Sat</div>
+
+                    </div>
+
+
+                    <div
+                        class="calendar-grid"
+                        id="calendarGrid"
+                    ></div>
+
+                </div>
+
+            </section>
+
+
+            <!-- RUBRICS -->
+
+            <section
+                class="section-page"
+                id="rubricsPage"
+            >
+
+                <h1>Rubrics</h1>
+
+                <div class="rubric-cards">
+
+                    <div class="rubric-card">
+                        A
+                    </div>
+
+                    <div class="rubric-card">
+                        B
+                    </div>
+
+                    <div class="rubric-card">
+                        C
+                    </div>
+
+                    <div class="rubric-card">
+                        D
+                    </div>
+
+                </div>
+
+                <button
+                    class="back-dashboard"
+                    id="backFromRubrics"
+                >
+                    ← Back to Dashboard
+                </button>
+
+            </section>
+
+        </div>
+
+    </div>
+
+</main>
+
+
+<!-- =========================================================
+     TASK CREATION PANEL
+========================================================= -->
+
+<div
+    class="modal-backdrop"
+    id="taskModal"
+>
+
+    <div class="task-panel">
+
+        <button
+            class="close-panel"
+            id="closeTaskPanel"
+        >
+            ×
+        </button>
+
+
+        <input
+            class="task-title"
+            id="taskTitle"
+            placeholder="New Page"
+            autocomplete="off"
+        >
+
+
+        <div class="form-grid">
+
+            <!-- COURSE -->
+
+            <div class="field full">
+
+                <div class="field-label">
+                    Course
+                </div>
+
+                <div
+                    class="course-options"
+                    id="courseOptions"
+                ></div>
+
+            </div>
+
+
+            <!-- LAST REVIEW -->
+
+            <div class="field">
+
+                <div class="field-label">
+                    Last Review
+                </div>
+
+                <input
+                    type="date"
+                    id="lastReview"
+                >
+
+            </div>
+
+
+            <!-- MASTERY -->
+
+            <div class="field">
+
+                <div class="field-label">
+                    Mastery
+                </div>
+
+                <div class="status-options">
+
+                    <div class="status-group">
+
+                        <div class="status-group-title">
+                            To-do
+                        </div>
+
+                        <button
+                            class="status-option"
+                            data-status="Not Started"
+                            style="background:#D9D6E8"
+                        >
+                            Not Started
+                        </button>
+
+                    </div>
+
+
+                    <div class="status-group">
+
+                        <div class="status-group-title">
+                            In Progress
+                        </div>
+
+                        <button
+                            class="status-option"
+                            data-status="Pending"
+                            style="background:#B8DDF2"
+                        >
+                            Pending
+                        </button>
+
+                    </div>
+
+
+                    <div class="status-group">
+
+                        <div class="status-group-title">
+                            Complete
+                        </div>
+
+                        <button
+                            class="status-option"
+                            data-status="Done"
+                            style="background:#D8B9E8"
+                        >
+                            Done
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- ASSIGNMENT -->
+
+            <div class="field full">
+
+                <div class="field-label">
+                    Assignment is…
+                </div>
+
+                <input
+                    class="assignment-search"
+                    id="assignmentSearch"
+                    placeholder="Search for an option"
+                >
+
+                <div
+                    class="assignment-options"
+                    id="assignmentOptions"
+                ></div>
+
+            </div>
+
+
+            <!-- DATE -->
+
+            <div class="field">
+
+                <div class="field-label">
+                    Date
+                </div>
+
+                <input
+                    type="date"
+                    id="taskDate"
+                >
+
+            </div>
+
+
+            <!-- DUE DATE -->
+
+            <div class="field">
+
+                <div class="field-label">
+                    Due Date
+                </div>
+
+                <input
+                    type="date"
+                    id="dueDate"
+                >
+
+            </div>
+
+
+            <!-- NOTES -->
+
+            <div class="field full">
+
+                <div class="field-label">
+                    Notes
+                </div>
+
+                <textarea
+                    id="taskNotes"
+                    placeholder="Add any information you need..."
+                ></textarea>
+
+            </div>
+
+
+            <!-- DAYS LEFT -->
+
+            <div class="field full">
+
+                <div class="field-label">
+                    Days Left
+                </div>
+
+                <input
+                    id="daysLeft"
+                    readonly
+                    placeholder="Select a due date"
+                >
+
+            </div>
+
+        </div>
+
+
+        <button
+            class="add-task"
+            id="addTaskButton"
+        >
+            Add Task
+        </button>
+
+    </div>
+
+</div>
+
+
+<!-- =========================================================
+     CELEBRATION
+========================================================= -->
+
+<div
+    class="celebration"
+    id="celebration"
+>
+
+    <div class="checkmark">
+        ✓
+    </div>
+
+    <h2>
+        Task Added! ✨
+    </h2>
+
+    <p>
+        Another task which needs to be completed!
+    </p>
+
+</div>
+
+
+<!-- =========================================================
+     LINK POPUP
+========================================================= -->
+
+<div
+    class="small-popup"
+    id="linkPopup"
+>
+
+    <h3 id="linkPopupTitle">
+        Save Website
+    </h3>
+
+    <input
+        id="linkInput"
+        type="url"
+        placeholder="https://..."
+    >
+
+    <div class="popup-buttons">
+
+        <button
+            class="save-link"
+            id="saveLink"
+        >
+            Save
+        </button>
+
+        <button
+            class="cancel-link"
+            id="cancelLink"
+        >
+            Cancel
+        </button>
+
+    </div>
+
+</div>
+
+
+<script type="module">
+
+/* =========================================================
+   FIREBASE
+========================================================= */
+
+import {
+    initializeApp
+} from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
+
+import {
+    getAuth,
+    onAuthStateChanged,
+    setPersistence,
+    browserLocalPersistence
+} from "https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js";
+
+import {
+    getFirestore,
+    doc,
+    getDoc,
+    setDoc,
+    serverTimestamp
+} from "https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
+
+
+const firebaseConfig = {
+    apiKey: "AIzaSyBNI4CR26Re0xdh-T0XdVyb6fFN7SPgPNA",
+    authDomain: "the-myp-haven.firebaseapp.com",
+    projectId: "the-myp-haven",
+    storageBucket: "the-myp-haven.firebasestorage.app",
+    messagingSenderId: "904577455533",
+    appId: "1:904577455533:web:1d918ee8a3caa547eefd24"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+await setPersistence(
+    auth,
+    browserLocalPersistence
+);
+
+
+/* =========================================================
+   ELEMENTS
+========================================================= */
+
+const lockScreen =
+    document.getElementById("lockScreen");
+
+const dashboard =
+    document.getElementById("dashboard");
+
+const welcomeDate =
+    document.getElementById("welcomeDate");
+
+const lockSlider =
+    document.getElementById("lockSlider");
+
+const lockProgress =
+    document.getElementById("lockProgress");
+
+const lockText =
+    document.getElementById("lockText");
+
+const capHandle =
+    document.getElementById("capHandle");
+
+const dashboardBackground =
+    document.getElementById("dashboardBackground");
+
+const backgroundInput =
+    document.getElementById("backgroundInput");
+
+const backgroundUploadButton =
+    document.getElementById("backgroundUploadButton");
+
+const calendarGrid =
+    document.getElementById("calendarGrid");
+
+const monthTitle =
+    document.getElementById("monthTitle");
+
+const taskModal =
+    document.getElementById("taskModal");
+
+const taskTitle =
+    document.getElementById("taskTitle");
+
+const courseOptions =
+    document.getElementById("courseOptions");
+
+const taskDate =
+    document.getElementById("taskDate");
+
+const lastReview =
+    document.getElementById("lastReview");
+
+const dueDate =
+    document.getElementById("dueDate");
+
+const taskNotes =
+    document.getElementById("taskNotes");
+
+const daysLeft =
+    document.getElementById("daysLeft");
+
+const assignmentSearch =
+    document.getElementById("assignmentSearch");
+
+const assignmentOptions =
+    document.getElementById("assignmentOptions");
+
+const celebration =
+    document.getElementById("celebration");
+
+
+/* =========================================================
+   STATE
+========================================================= */
+
+let currentUser = null;
+
+let selectedSubjects = [];
+
+let selectedCourse = "";
+
+let selectedStatus = "Not Started";
+
+let selectedAssignment = "";
+
+let tasks = [];
+
+let customAssignmentCategories = [];
+
+let currentCalendarDate = new Date();
+
+let editingTaskId = null;
+
+let linkType = "";
+
+
+/* =========================================================
+   SUBJECT COLORS
+========================================================= */
+
+const subjectColors = {
+
+    "English Language & Literature":
+        "#F9A8B8",
+
+    "Other Language and Literature":
+        "#F9A8B8",
+
+    "Spanish":
+        "#FDBA9A",
+
+    "French":
+        "#FDBA9A",
+
+    "German":
+        "#FDBA9A",
+
+    "Mandarin Chinese":
+        "#FDBA9A",
+
+    "Arabic":
+        "#FDBA9A",
+
+    "Other Language Acquisition":
+        "#FDBA9A",
+
+    "Integrated Humanities":
+        "#FDE68A",
+
+    "History":
+        "#FDE68A",
+
+    "Geography":
+        "#FDE68A",
+
+    "Integrated Sciences":
+        "#A7E8BD",
+
+    "Biology":
+        "#A7E8BD",
+
+    "Chemistry":
+        "#A7E8BD",
+
+    "Physics":
+        "#A7E8BD",
+
+    "Mathematics (MYP1-5)":
+        "#FDE68A",
+
+    "Extended Mathematics (MYP4-5)":
+        "#FDE68A",
+
+    "Dance":
+        "#C4B5FD",
+
+    "Media Arts":
+        "#C4B5FD",
+
+    "Music":
+        "#C4B5FD",
+
+    "Theatre":
+        "#C4B5FD",
+
+    "Visual Arts":
+        "#C4B5FD",
+
+    "Physical and Health Education":
+        "#93C5FD",
+
+    "Design":
+        "#7DD3C7",
+
+    "Other":
+        "#E8B8D4"
+};
+
+
+/* =========================================================
+   ASSIGNMENT CATEGORIES
+========================================================= */
+
+const permanentAssignments = [
+
+    {
+        name:"Formative Assessment",
+        color:"#B8E3F0"
+    },
+
+    {
+        name:"Summative Assessment",
+        color:"#C8B9E8"
+    },
+
+    {
+        name:"Random Assignment",
+        color:"#F2C3A5"
+    },
+
+    {
+        name:"Other",
+        color:"#E8B8D4"
+    }
+
+];
+
+
+/* =========================================================
+   DATE
+========================================================= */
+
+function formatWelcomeDate(){
+
+    const now = new Date();
+
+    welcomeDate.textContent =
+        now.toLocaleDateString(
+            undefined,
+            {
+                weekday:"long",
+                month:"long",
+                day:"numeric",
+                year:"numeric"
+            }
+        );
+}
+
+formatWelcomeDate();
+
+
+/* =========================================================
+   LOCK-IN SLIDER
+========================================================= */
+
+let dragging = false;
+let completed = false;
+
+function updateSlider(clientX){
+
+    if(completed) return;
+
+    const rect =
+        lockSlider.getBoundingClientRect();
+
+    const handleSize =
+        capHandle.offsetWidth;
+
+    const min =
+        8;
+
+    const max =
+        rect.width - handleSize - 8;
+
+    let x =
+        clientX - rect.left - handleSize / 2;
+
+    x =
+        Math.max(min,Math.min(x,max));
+
+    const percentage =
+        (x - min) / (max - min);
+
+    const percent =
+        percentage * 100;
+
+    capHandle.style.left =
+        `${x}px`;
+
+    lockProgress.style.width =
+        `${percent}%`;
+
+    if(percent >= 98){
+
+        completeLockIn();
+
+    }
+}
+
+
+function startDrag(event){
+
+    if(completed) return;
+
+    dragging = true;
+
+    capHandle.classList.add("dragging");
+
+    const point =
+        event.touches
+        ? event.touches[0]
+        : event;
+
+    updateSlider(point.clientX);
+}
+
+
+function drag(event){
+
+    if(!dragging || completed) return;
+
+    const point =
+        event.touches
+        ? event.touches[0]
+        : event;
+
+    updateSlider(point.clientX);
+
+    if(event.cancelable){
+        event.preventDefault();
+    }
+}
+
+
+function stopDrag(){
+
+    dragging = false;
+
+    capHandle.classList.remove("dragging");
+}
+
+
+capHandle.addEventListener(
+    "mousedown",
+    startDrag
+);
+
+document.addEventListener(
+    "mousemove",
+    drag
+);
+
+document.addEventListener(
+    "mouseup",
+    stopDrag
+);
+
+capHandle.addEventListener(
+    "touchstart",
+    startDrag,
+    {passive:false}
+);
+
+document.addEventListener(
+    "touchmove",
+    drag,
+    {passive:false}
+);
+
+document.addEventListener(
+    "touchend",
+    stopDrag
+);
+
+
+async function completeLockIn(){
+
+    if(completed) return;
+
+    completed = true;
+
+    capHandle.classList.remove("dragging");
+
+    lockProgress.style.width =
+        "100%";
+
+    lockText.textContent =
+        "We're locked in!";
+
+    try{
+
+        if(currentUser){
+
+            await setDoc(
+                doc(
+                    db,
+                    "users",
+                    currentUser.uid
+                ),
+                {
+                    lockedIn:true,
+                    updatedAt:serverTimestamp()
+                },
+                {
+                    merge:true
+                }
+            );
+
+        }
+
+    }catch(error){
+
+        console.warn(
+            "Could not save lock-in state:",
+            error
+        );
+
+    }
+
+    setTimeout(() => {
+
+        lockScreen.classList.add("hidden");
+
+        setTimeout(() => {
+
+            dashboard.classList.add("visible");
+
+            requestAnimationFrame(() => {
+
+                dashboard.classList.add("entered");
+
+            });
+
+        },400);
+
+    },700);
+}
+
+
+/* =========================================================
+   FIREBASE USER
+========================================================= */
+
+onAuthStateChanged(
+    auth,
+    async user => {
+
+        if(!user){
+
+            window.location.href =
+                "./account.html";
+
+            return;
+        }
+
+        currentUser = user;
+
+        await loadUserData();
+
+    }
+);
+
+
+/* =========================================================
+   LOAD USER
+========================================================= */
+
+async function loadUserData(){
+
+    try{
+
+        const userRef =
+            doc(
+                db,
+                "users",
+                currentUser.uid
+            );
+
+        const snapshot =
+            await getDoc(userRef);
+
+        if(snapshot.exists()){
+
+            const data =
+                snapshot.data();
+
+            selectedSubjects =
+                Array.isArray(data.subjects)
+                ? data.subjects
+                : [];
+
+            tasks =
+                Array.isArray(data.tasks)
+                ? data.tasks
+                : [];
+
+            customAssignmentCategories =
+                Array.isArray(
+                    data.customAssignmentCategories
+                )
+                ? data.customAssignmentCategories
+                : [];
+
+            if(data.backgroundImageUrl){
+
+                dashboardBackground.style.backgroundImage =
+                    `url("${data.backgroundImageUrl}")`;
+
+            }
+
+            renderCourses();
+
+            renderCalendar();
+
+            if(data.lockedIn === true){
+
+                completed = true;
+
+                lockProgress.style.width =
+                    "100%";
+
+                capHandle.style.left =
+                    `${lockSlider.offsetWidth -
+                    capHandle.offsetWidth -
+                    8}px`;
+
+                lockText.textContent =
+                    "We're locked in!";
+
+            }
+
+        }
+
+    }catch(error){
+
+        console.error(
+            "Could not load dashboard:",
+            error
+        );
+
+        loadLocalFallback();
+
+    }
+
+}
+
+
+function loadLocalFallback(){
+
+    try{
+
+        const local =
+            JSON.parse(
+                localStorage.getItem(
+                    `mypHavenDashboard_${currentUser.uid}`
+                ) || "{}"
+            );
+
+        tasks =
+            local.tasks || [];
+
+        selectedSubjects =
+            local.subjects || [];
+
+        customAssignmentCategories =
+            local.customAssignmentCategories || [];
+
+        if(local.backgroundImage){
+
+            dashboardBackground.style.backgroundImage =
+                `url("${local.backgroundImage}")`;
+
+        }
+
+    }catch(error){
+
+        console.warn(error);
+
+    }
+
+    renderCourses();
+
+    renderCalendar();
+
+}
+
+
+/* =========================================================
+   SAVE DASHBOARD
+========================================================= */
+
+async function saveDashboard(){
+
+    const localData = {
+
+        tasks,
+
+        subjects:selectedSubjects,
+
+        customAssignmentCategories,
+
+        backgroundImage:
+            dashboardBackground.style.backgroundImage
+
+    };
+
+    localStorage.setItem(
+        `mypHavenDashboard_${currentUser.uid}`,
+        JSON.stringify(localData)
+    );
+
+    try{
+
+        await setDoc(
+            doc(
+                db,
+                "users",
+                currentUser.uid
+            ),
+            {
+                tasks,
+                customAssignmentCategories,
+                updatedAt:serverTimestamp()
+            },
+            {
+                merge:true
+            }
+        );
+
+    }catch(error){
+
+        console.warn(
+            "Dashboard saved locally:",
+            error
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   BACKGROUND IMAGE
+========================================================= */
+
+backgroundUploadButton.addEventListener(
+    "click",
+    () => backgroundInput.click()
+);
+
+backgroundInput.addEventListener(
+    "change",
+    event => {
+
+        const file =
+            event.target.files[0];
+
+        if(!file) return;
+
+        const reader =
+            new FileReader();
+
+        reader.onload = async e => {
+
+            const image =
+                e.target.result;
+
+            dashboardBackground.style.backgroundImage =
+                `url("${image}")`;
+
+            localStorage.setItem(
+                `mypHavenBackground_${currentUser.uid}`,
+                image
+            );
+
+            try{
+
+                await setDoc(
+                    doc(
+                        db,
+                        "users",
+                        currentUser.uid
+                    ),
+                    {
+                        backgroundImageUrl:image,
+                        updatedAt:serverTimestamp()
+                    },
+                    {
+                        merge:true
+                    }
+                );
+
+            }catch(error){
+
+                console.warn(
+                    "Background saved locally:",
+                    error
+                );
+
+            }
+
+        };
+
+        reader.readAsDataURL(file);
+
+    }
+);
+
+
+/* =========================================================
+   COURSE OPTIONS
+========================================================= */
+
+function renderCourses(){
+
+    courseOptions.innerHTML = "";
+
+    const subjects =
+        [
+            ...selectedSubjects,
+            "Other"
+        ];
+
+    const unique =
+        [...new Set(subjects)];
+
+    unique.forEach(subject => {
+
+        const button =
+            document.createElement("button");
+
+        button.className =
+            "course-option";
+
+        button.textContent =
+            subject;
+
+        button.style.background =
+            subjectColors[subject]
+            || "#E8B8D4";
+
+        button.addEventListener(
+            "click",
+            () => {
+
+                selectedCourse =
+                    subject;
+
+                document
+                    .querySelectorAll(".course-option")
+                    .forEach(
+                        b =>
+                            b.classList.remove(
+                                "selected"
+                            )
+                    );
+
+                button.classList.add(
+                    "selected"
+                );
+
+            }
+        );
+
+        courseOptions.appendChild(button);
+
+    });
+
+}
+
+
+/* =========================================================
+   CALENDAR
+========================================================= */
+
+function renderCalendar(){
+
+    const year =
+        currentCalendarDate.getFullYear();
+
+    const month =
+        currentCalendarDate.getMonth();
+
+    monthTitle.textContent =
+        new Date(
+            year,
+            month,
+            1
+        ).toLocaleDateString(
+            undefined,
+            {
+                month:"long",
+                year:"numeric"
+            }
+        );
+
+    calendarGrid.innerHTML = "";
+
+    const firstDay =
+        new Date(
+            year,
+            month,
+            1
+        ).getDay();
+
+    const daysInMonth =
+        new Date(
+            year,
+            month + 1,
+            0
+        ).getDate();
+
+    for(
+        let i = 0;
+        i < firstDay;
+        i++
+    ){
+
+        const empty =
+            document.createElement("div");
+
+        empty.className =
+            "day-cell empty";
+
+        calendarGrid.appendChild(
+            empty
+        );
+
+    }
+
+
+    for(
+        let day = 1;
+        day <= daysInMonth;
+        day++
+    ){
+
+        const cell =
+            document.createElement("div");
+
+        cell.className =
+            "day-cell";
+
+        const number =
+            document.createElement("div");
+
+        number.className =
+            "day-number";
+
+        number.textContent =
+            day;
+
+
+        const now =
+            new Date();
+
+        if(
+            day === now.getDate() &&
+            month === now.getMonth() &&
+            year === now.getFullYear()
+        ){
+
+            number.classList.add(
+                "today-number"
+            );
+
+        }
+
+
+        cell.appendChild(number);
+
+
+        const list =
+            document.createElement("div");
+
+        list.className =
+            "task-list";
+
+
+        const dateKey =
+            makeDateKey(
+                year,
+                month,
+                day
+            );
+
+
+        const dayTasks =
+            tasks.filter(
+                task =>
+                    task.date === dateKey
+            );
+
+
+        dayTasks.forEach(task => {
+
+            const taskElement =
+                document.createElement("div");
+
+            taskElement.className =
+                "calendar-task";
+
+            taskElement.textContent =
+                task.title || "Untitled";
+
+            taskElement.style.background =
+                getTaskColor(task);
+
+            taskElement.addEventListener(
+                "click",
+                event => {
+
+                    event.stopPropagation();
+
+                    openTaskEditor(
+                        task.id
+                    );
+
+                }
+            );
+
+            list.appendChild(
+                taskElement
+            );
+
+        });
+
+
+        cell.appendChild(list);
+
+
+        cell.addEventListener(
+            "dblclick",
+            () => {
+
+                openTaskCreator(
+                    dateKey
+                );
+
+            }
+        );
+
+
+        calendarGrid.appendChild(
+            cell
+        );
+
+    }
+
+}
+
+
+function makeDateKey(
+    year,
+    month,
+    day
+){
+
+    return [
+        year,
+        String(month + 1).padStart(2,"0"),
+        String(day).padStart(2,"0")
+    ].join("-");
+
+}
+
+
+/* =========================================================
+   TASK COLOR
+========================================================= */
+
+function getTaskColor(task){
+
+    if(task.status === "Done"){
+        return "#D8B9E8";
+    }
+
+    if(task.course){
+
+        return subjectColors[
+            task.course
+        ] || "#E8B8D4";
+
+    }
+
+    return "#D9D6E8";
+
+}
+
+
+/* =========================================================
+   CALENDAR NAVIGATION
+========================================================= */
+
+document
+    .getElementById("previousMonth")
+    .addEventListener(
+        "click",
+        () => {
+
+            currentCalendarDate =
+                new Date(
+                    currentCalendarDate.getFullYear(),
+                    currentCalendarDate.getMonth() - 1,
+                    1
+                );
+
+            renderCalendar();
+
+        }
+    );
+
+
+document
+    .getElementById("nextMonth")
+    .addEventListener(
+        "click",
+        () => {
+
+            currentCalendarDate =
+                new Date(
+                    currentCalendarDate.getFullYear(),
+                    currentCalendarDate.getMonth() + 1,
+                    1
+                );
+
+            renderCalendar();
+
+        }
+    );
+
+
+document
+    .getElementById("todayButton")
+    .addEventListener(
+        "click",
+        () => {
+
+            currentCalendarDate =
+                new Date();
+
+            renderCalendar();
+
+        }
+    );
+
+
+/* =========================================================
+   TASK CREATOR
+========================================================= */
+
+function openTaskCreator(
+    date
+){
+
+    editingTaskId = null;
+
+    taskTitle.value = "";
+
+    selectedCourse =
+        "";
+
+    selectedStatus =
+        "Not Started";
+
+    selectedAssignment =
+        "";
+
+    taskDate.value =
+        date;
+
+    lastReview.value =
+        "";
+
+    dueDate.value =
+        date;
+
+    taskNotes.value =
+        "";
+
+    updateDaysLeft();
+
+    renderCourses();
+
+    renderAssignments();
+
+    updateStatusButtons();
+
+    taskModal.classList.add(
+        "open"
+    );
+
+}
+
+
+function openTaskEditor(
+    taskId
+){
+
+    const task =
+        tasks.find(
+            t => t.id === taskId
+        );
+
+    if(!task) return;
+
+    editingTaskId =
+        taskId;
+
+    taskTitle.value =
+        task.title || "";
+
+    selectedCourse =
+        task.course || "";
+
+    selectedStatus =
+        task.status || "Not Started";
+
+    selectedAssignment =
+        task.assignment || "";
+
+    taskDate.value =
+        task.date || "";
+
+    lastReview.value =
+        task.lastReview || "";
+
+    dueDate.value =
+        task.dueDate || "";
+
+    taskNotes.value =
+        task.notes || "";
+
+    renderCourses();
+
+    renderAssignments();
+
+    updateStatusButtons();
+
+    updateDaysLeft();
+
+    taskModal.classList.add(
+        "open"
+    );
+
+}
+
+
+document
+    .getElementById("closeTaskPanel")
+    .addEventListener(
+        "click",
+        closeTaskPanel
+    );
+
+
+function closeTaskPanel(){
+
+    taskModal.classList.remove(
+        "open"
+    );
+
+}
+
+
+/* =========================================================
+   STATUS
+========================================================= */
+
+document
+    .querySelectorAll(".status-option")
+    .forEach(button => {
+
+        button.addEventListener(
+            "click",
+            () => {
+
+                selectedStatus =
+                    button.dataset.status;
+
+                updateStatusButtons();
+
+            }
+        );
+
+    });
+
+
+function updateStatusButtons(){
+
+    document
+        .querySelectorAll(".status-option")
+        .forEach(button => {
+
+            button.classList.toggle(
+                "selected",
+                button.dataset.status ===
+                selectedStatus
+            );
+
+        });
+
+}
+
+
+/* =========================================================
+   ASSIGNMENTS
+========================================================= */
+
+function renderAssignments(){
+
+    assignmentOptions.innerHTML = "";
+
+    const all =
+        [
+            ...permanentAssignments,
+            ...customAssignmentCategories
+        ];
+
+    const search =
+        assignmentSearch.value
+            .trim()
+            .toLowerCase();
+
+    const filtered =
+        all.filter(
+            option =>
+                option.name
+                    .toLowerCase()
+                    .includes(search)
+        );
+
+
+    filtered.forEach(option => {
+
+        const row =
+            document.createElement("div");
+
+        row.className =
+            "assignment-option";
+
+        row.style.background =
+            option.color;
+
+        const text =
+            document.createElement("span");
+
+        text.textContent =
+            option.name;
+
+        row.appendChild(text);
+
+
+        const permanent =
+            permanentAssignments.some(
+                item =>
+                    item.name === option.name
+            );
+
+
+        if(!permanent){
+
+            const menu =
+                document.createElement("button");
+
+            menu.className =
+                "assignment-menu";
+
+            menu.textContent =
+                "⋯";
+
+            menu.addEventListener(
+                "click",
+                event => {
+
+                    event.stopPropagation();
+
+                    manageCustomCategory(
+                        option
+                    );
+
+                }
+            );
+
+            row.appendChild(menu);
+
+        }
+
+
+        row.addEventListener(
+            "click",
+            () => {
+
+                selectedAssignment =
+                    option.name;
+
+                document
+                    .querySelectorAll(
+                        ".assignment-option"
+                    )
+                    .forEach(
+                        item =>
+                            item.style.outline =
+                                "none"
+                    );
+
+                row.style.outline =
+                    "3px solid rgba(0,0,0,.10)";
+
+            }
+        );
+
+
+        assignmentOptions.appendChild(
+            row
+        );
+
+    });
+
+
+    if(
+        search &&
+        !all.some(
+            option =>
+                option.name.toLowerCase() ===
+                search
+        )
+    ){
+
+        const create =
+            document.createElement("button");
+
+        create.className =
+            "create-custom";
+
+        create.textContent =
+            `Create ${assignmentSearch.value}`;
+
+        create.addEventListener(
+            "click",
+            () => {
+
+                createCustomCategory(
+                    assignmentSearch.value.trim()
+                );
+
+            }
+        );
+
+        assignmentOptions.appendChild(
+            create
+        );
+
+    }
+
+}
+
+
+assignmentSearch.addEventListener(
+    "input",
+    renderAssignments
+);
+
+
+function createCustomCategory(
+    name
+){
+
+    if(!name) return;
+
+    const exists =
+        permanentAssignments
+            .some(
+                x =>
+                    x.name.toLowerCase() ===
+                    name.toLowerCase()
+            ) ||
+        customAssignmentCategories
+            .some(
+                x =>
+                    x.name.toLowerCase() ===
+                    name.toLowerCase()
+            );
+
+    if(exists){
+
+        selectedAssignment =
+            name;
+
+        return;
+
+    }
+
+    const category = {
+
+        id:
+            "custom_" +
+            Date.now(),
+
+        name,
+
+        color:"#E8B8D4"
+
+    };
+
+    customAssignmentCategories.push(
+        category
+    );
+
+    selectedAssignment =
+        name;
+
+    assignmentSearch.value =
+        "";
+
+    renderAssignments();
+
+    saveDashboard();
+
+}
+
+
+function manageCustomCategory(
+    category
+){
+
+    const action =
+        prompt(
+            `${category.name}\n\nType:\nrename\ncolor\ndelete`
+        );
+
+    if(!action) return;
+
+
+    if(
+        action.toLowerCase() ===
+        "rename"
+    ){
+
+        const name =
+            prompt(
+                "New category name:",
+                category.name
+            );
+
+        if(name){
+
+            category.name =
+                name;
+
+            renderAssignments();
+
+            saveDashboard();
+
+        }
+
+    }
+
+
+    else if(
+        action.toLowerCase() ===
+        "color"
+    ){
+
+        const color =
+            prompt(
+                "Enter a HEX color:",
+                category.color
+            );
+
+        if(
+            color &&
+            /^#[0-9A-F]{6}$/i.test(color)
+        ){
+
+            category.color =
+                color;
+
+            renderAssignments();
+
+            saveDashboard();
+
+        }
+
+    }
+
+
+    else if(
+        action.toLowerCase() ===
+        "delete"
+    ){
+
+        const confirmed =
+            confirm(
+                "Delete this custom category?"
+            );
+
+        if(confirmed){
+
+            customAssignmentCategories =
+                customAssignmentCategories.filter(
+                    item =>
+                        item.id !== category.id
+                );
+
+            if(
+                selectedAssignment ===
+                category.name
+            ){
+
+                selectedAssignment =
+                    "";
+
+            }
+
+            renderAssignments();
+
+            saveDashboard();
+
+        }
+
+    }
+
+}
+
+
+/* =========================================================
+   DAYS LEFT
+========================================================= */
+
+dueDate.addEventListener(
+    "change",
+    updateDaysLeft
+);
+
+
+function updateDaysLeft(){
+
+    if(!dueDate.value){
+
+        daysLeft.value =
+            "Select a due date";
+
+        return;
+
+    }
+
+    if(
+        selectedStatus ===
+        "Done"
+    ){
+
+        daysLeft.value =
+            "COMPLETED";
+
+        return;
+
+    }
+
+
+    const today =
+        new Date();
+
+    today.setHours(
+        0,0,0,0
+    );
+
+    const due =
+        new Date(
+            dueDate.value +
+            "T00:00:00"
+        );
+
+    const difference =
+        Math.round(
+            (
+                due.getTime() -
+                today.getTime()
+            ) /
+            86400000
+        );
+
+
+    if(difference > 0){
+
+        daysLeft.value =
+            `${difference} Days Left`;
+
+    }
+
+    else if(difference === 0){
+
+        daysLeft.value =
+            "Due Today";
+
+    }
+
+    else{
+
+        daysLeft.value =
+            `🚨 DUE DATE Passed — ${difference} Days Late`;
+
+    }
+
+}
+
+
+setInterval(
+    () => {
+
+        if(
+            taskModal.classList.contains(
+                "open"
+            )
+        ){
+
+            updateDaysLeft();
+
+        }
+
+        renderCalendar();
+
+    },
+    60000
+);
+
+
+/* =========================================================
+   ADD / SAVE TASK
+========================================================= */
+
+document
+    .getElementById("addTaskButton")
+    .addEventListener(
+        "click",
+        async () => {
+
+            const title =
+                taskTitle.value.trim();
+
+            if(!title){
+
+                alert(
+                    "Please give your task a name."
+                );
+
+                taskTitle.focus();
+
+                return;
+
+            }
+
+
+            if(!selectedCourse){
+
+                alert(
+                    "Please select a course."
+                );
+
+                return;
+
+            }
+
+
+            if(!selectedAssignment){
+
+                alert(
+                    "Please select what the assignment is."
+                );
+
+                return;
+
+            }
+
+
+            if(!taskDate.value){
+
+                alert(
+                    "Please select a date."
+                );
+
+                return;
+
+            }
+
+
+            const task = {
+
+                id:
+                    editingTaskId ||
+                    `task_${Date.now()}`,
+
+                title,
+
+                course:
+                    selectedCourse,
+
+                status:
+                    selectedStatus,
+
+                assignment:
+                    selectedAssignment,
+
+                date:
+                    taskDate.value,
+
+                lastReview:
+                    lastReview.value,
+
+                dueDate:
+                    dueDate.value,
+
+                notes:
+                    taskNotes.value.trim(),
+
+                createdAt:
+                    new Date().toISOString()
+
+            };
+
+
+            const oldTask =
+                tasks.find(
+                    t =>
+                        t.id ===
+                        editingTaskId
+                );
+
+
+            if(editingTaskId){
+
+                tasks =
+                    tasks.map(
+                        t =>
+                            t.id ===
+                            editingTaskId
+                            ? task
+                            : t
+                    );
+
+            }else{
+
+                tasks.push(task);
+
+            }
+
+
+            closeTaskPanel();
+
+            renderCalendar();
+
+            await saveDashboard();
+
+            showTaskCelebration();
+
+        }
+    );
+
+
+/* =========================================================
+   TASK CELEBRATION
+========================================================= */
+
+function showTaskCelebration(){
+
+    celebration.classList.add(
+        "show"
+    );
+
+    createConfetti(
+        70
+    );
+
+    setTimeout(
+        () => {
+
+            celebration.classList.remove(
+                "show"
+            );
+
+        },
+        2600
+    );
+
+}
+
+
+function createConfetti(
+    count
+){
+
+    for(
+        let i = 0;
+        i < count;
+        i++
+    ){
+
+        const piece =
+            document.createElement("div");
+
+        piece.className =
+            "confetti";
+
+        const pastelColors = [
+            "#FFB6C1",
+            "#FFD6A5",
+            "#FDFFB6",
+            "#CAFFBF",
+            "#BDE0FE",
+            "#CDB4DB"
+        ];
+
+        piece.style.background =
+            pastelColors[
+                Math.floor(
+                    Math.random() *
+                    pastelColors.length
+                )
+            ];
+
+        piece.style.left =
+            "50%";
+
+        piece.style.top =
+            "50%";
+
+        piece.style.setProperty(
+            "--x",
+            `${(Math.random()-.5)*700}px`
+        );
+
+        piece.style.setProperty(
+            "--y",
+            `${(Math.random()-.5)*500}px`
+        );
+
+        document.body.appendChild(
+            piece
+        );
+
+        setTimeout(
+            () =>
+                piece.remove(),
+            2000
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   SMALL DONE CELEBRATION
+========================================================= */
+
+async function completeTask(
+    taskId
+){
+
+    const task =
+        tasks.find(
+            t => t.id === taskId
+        );
+
+    if(!task) return;
+
+    if(
+        task.status !==
+        "Done"
+    ){
+
+        task.status =
+            "Done";
+
+        renderCalendar();
+
+        await saveDashboard();
+
+        createConfetti(
+            30
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   SCHOOL / EMAIL LINKS
+========================================================= */
+
+const schoolButton =
+    document.getElementById(
+        "schoolButton"
+    );
+
+const emailButton =
+    document.getElementById(
+        "emailButton"
+    );
+
+const linkPopup =
+    document.getElementById(
+        "linkPopup"
+    );
+
+const linkPopupTitle =
+    document.getElementById(
+        "linkPopupTitle"
+    );
+
+const linkInput =
+    document.getElementById(
+        "linkInput"
+    );
+
+
+document
+    .querySelectorAll(".dots")
+    .forEach(button => {
+
+        button.addEventListener(
+            "click",
+            event => {
+
+                event.stopPropagation();
+
+                linkType =
+                    button.dataset.link;
+
+                linkPopupTitle.textContent =
+                    linkType === "school"
+                    ? "School Web"
+                    : "Email";
+
+                const saved =
+                    localStorage.getItem(
+                        `mypHaven_${linkType}_${currentUser.uid}`
+                    ) || "";
+
+                linkInput.value =
+                    saved;
+
+                linkPopup.classList.add(
+                    "open"
+                );
+
+            }
+        );
+
+    });
+
+
+schoolButton.addEventListener(
+    "click",
+    () => openSavedLink("school")
+);
+
+
+emailButton.addEventListener(
+    "click",
+    () => openSavedLink("email")
+);
+
+
+function openSavedLink(
+    type
+){
+
+    const url =
+        localStorage.getItem(
+            `mypHaven_${type}_${currentUser.uid}`
+        );
+
+    if(!url){
+
+        linkType =
+            type;
+
+        linkPopupTitle.textContent =
+            type === "school"
+            ? "School Web"
+            : "Email";
+
+        linkInput.value = "";
+
+        linkPopup.classList.add(
+            "open"
+        );
+
+        return;
+
+    }
+
+    window.open(
+        url,
+        "_blank",
+        "noopener,noreferrer"
+    );
+
+}
+
+
+document
+    .getElementById("saveLink")
+    .addEventListener(
+        "click",
+        async () => {
+
+            let url =
+                linkInput.value.trim();
+
+            if(!url){
+
+                return;
+
+            }
+
+            if(
+                !url.startsWith(
+                    "http://"
+                ) &&
+                !url.startsWith(
+                    "https://"
+                )
+            ){
+
+                url =
+                    "https://" + url;
+
+            }
+
+            localStorage.setItem(
+                `mypHaven_${linkType}_${currentUser.uid}`,
+                url
+            );
+
+            try{
+
+                await setDoc(
+                    doc(
+                        db,
+                        "users",
+                        currentUser.uid
+                    ),
+                    {
+                        [
+                            linkType === "school"
+                            ? "schoolWebUrl"
+                            : "emailUrl"
+                        ]:
+                            url,
+
+                        updatedAt:
+                            serverTimestamp()
+
+                    },
+                    {
+                        merge:true
+                    }
+                );
+
+            }catch(error){
+
+                console.warn(error);
+
+            }
+
+            linkPopup.classList.remove(
+                "open"
+            );
+
+        }
+    );
+
+
+document
+    .getElementById("cancelLink")
+    .addEventListener(
+        "click",
+        () => {
+
+            linkPopup.classList.remove(
+                "open"
+            );
+
+        }
+    );
+
+
+/* =========================================================
+   RUBRICS
+========================================================= */
+
+const dashboardMain =
+    document.getElementById(
+        "dashboardMain"
+    );
+
+const rubricsPage =
+    document.getElementById(
+        "rubricsPage"
+    );
+
+
+document
+    .getElementById("rubricsButton")
+    .addEventListener(
+        "click",
+        () => {
+
+            dashboardMain.style.display =
+                "none";
+
+            rubricsPage.classList.add(
+                "active"
+            );
+
+            // Restart animations
+            const cards =
+                rubricsPage.querySelectorAll(
+                    ".rubric-card"
+                );
+
+            cards.forEach(card => {
+
+                card.style.animation =
+                    "none";
+
+                void card.offsetWidth;
+
+                card.style.animation =
+                    "";
+
+            });
+
+        }
+    );
+
+
+document
+    .getElementById("backFromRubrics")
+    .addEventListener(
+        "click",
+        () => {
+
+            rubricsPage.classList.remove(
+                "active"
+            );
+
+            dashboardMain.style.display =
+                "block";
+
+        }
+    );
+
+
+/* =========================================================
+   OTHER DASHBOARD BUTTONS
+========================================================= */
+
+document
+    .getElementById("explanationButton")
+    .addEventListener(
+        "click",
+        () => {
+
+            alert(
+                "Explanation Pages will open here."
+            );
+
+        }
+    );
+
+
+document
+    .getElementById("commandButton")
+    .addEventListener(
+        "click",
+        () => {
+
+            alert(
+                "Command-Term Database will open here."
+            );
+
+        }
+    );
+
+
+document
+    .getElementById("gradeButton")
+    .addEventListener(
+        "click",
+        () => {
+
+            alert(
+                "Grade Calculator will open here."
+            );
+
+        }
+    );
+
+
+document
+    .getElementById("supportButton")
+    .addEventListener(
+        "click",
+        () => {
+
+            alert(
+                "Study & Work Support will open here."
+            );
+
+        }
+    );
+
+
+document
+    .getElementById("examButton")
+    .addEventListener(
+        "click",
+        () => {
+
+            alert(
+                "Exam Season ’27 will open here."
+            );
+
+        }
+    );
+
+
+/* =========================================================
+   CLOSE MODAL WITH BACKDROP
+========================================================= */
+
+taskModal.addEventListener(
+    "click",
+    event => {
+
+        if(
+            event.target ===
+            taskModal
+        ){
+
+            closeTaskPanel();
+
+        }
+
+    }
+);
+
+
+/* =========================================================
+   INITIAL LOCAL BACKGROUND
+========================================================= */
+
+if(currentUser){
+
+    const savedBackground =
+        localStorage.getItem(
+            `mypHavenBackground_${currentUser.uid}`
+        );
+
+    if(savedBackground){
+
+        dashboardBackground.style.backgroundImage =
+            `url("${savedBackground}")`;
+
+    }
+
+}
+
+
+/* =========================================================
+   INITIAL CALENDAR
+========================================================= */
+
+renderCalendar();
+
+</script>
+
+</body>
+</html>
